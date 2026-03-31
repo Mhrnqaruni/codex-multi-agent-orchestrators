@@ -1,0 +1,180 @@
+UNDERSTANDING
+
+You want the best practical way, as a small UK company, to launch a paid app business fast:
+a mobile app, a Windows app, login-based access, and a backend that can reliably tell whether a user is `premium` or `regular`. You specifically want the best payment choice for a launch in 1 to 2 days, and you asked whether PayPal or Stripe is better.
+
+SOLUTION
+
+As of March 24, 2026, my best answer is:
+
+Use Stripe first for web and direct Windows sales if you are launching UK-first and want the easiest developer path.
+Use Paddle instead of Stripe if you want to sell globally to consumers immediately and do not want VAT/sales-tax/compliance burden on your small team.
+Do not use PayPal as your primary billing system.
+Launch web/direct Windows first. Treat iPhone and Android billing as phase 2 unless your store accounts, products, and review pipelines are already ready.
+Make your backend the source of truth for access. Payments only feed billing state into your backend; they do not directly define access in the apps.
+
+What I changed from the previous version, and why
+
+- I moved billing correctness into Day 1, not Day 2. Reason: Stripe explicitly retries undelivered events, may resend events, and recommends duplicate-safe handling. Launching sales before signature verification, raw-body handling, dedupe, and provider-state fetch is unsafe.
+- I removed Stripe Payment Links from the main recommendation. Reason: `client_reference_id` on Payment Links is only a string attached to the Checkout Session and is not authenticated identity. A user can tamper with it before paying. Main path is now server-created Checkout Sessions only.
+- I added the Apple-specific account-linking and policy rules. Reason: for iOS you need `appAccountToken` to map purchases to your internal user, and App Review rules matter: `3.1.3(b)` vs `3.1.3(f)` changes what external purchases are allowed.
+- I replaced the flat user billing fields with a normalized multi-provider model. Reason: one user can have Stripe web billing, Apple IAP, Google Play purchases, restores, refunds, or overlapping access windows. A single `provider_subscription_id` field is not enough.
+- I updated Microsoft guidance to the current Store Policies version `7.19`, published September 10, 2025 and effective October 14, 2025, and added the Partner Center disclosure requirement for third-party purchase APIs.
+
+Best decision for your exact situation
+
+- If your first customers are mainly UK customers and you want the fastest build: Stripe.
+- If your real goal is “start selling globally with the fewest tax/compliance headaches”: Paddle.
+- If you are deciding only between PayPal and Stripe: Stripe wins.
+- If you need mobile stores immediately: use Apple In-App Purchase on iOS and Google Play Billing on Android. Do not try to force Stripe or PayPal as the single in-app payment system for ordinary consumer digital premium access.
+
+Why Stripe beats PayPal for this use case
+
+- Stripe is a better fit for login-based software subscriptions because Checkout, Billing, customer portal, webhooks, and entitlement sync fit the “user pays, backend updates premium status, apps unlock features” model very cleanly.
+- Stripe UK card pricing is clear for a small launch: `1.5% + 20p` for standard UK cards. But be careful: if you use Stripe Billing for subscriptions, Billing adds `0.7%` of billing volume, and Stripe Tax can add `0.5%` on taxed no-code transactions.
+- PayPal absolutely works. PayPal says subscription payments are built into PayPal Checkout. But its public fee structure is more fragmented by product. For example, its UK page shows `2.9% + fixed fee` for “All Other Commercial Transactions” and `1.2% + fixed fee` for a card-funded payment from a user paying without a PayPal account. For a small software team, Stripe is usually the easier implementation path. That last point is an inference from the docs and product structure, not a PayPal claim.
+- PayPal should be an optional later payment method if customers ask for it. It should not be your primary billing system of record.
+
+Why Paddle may actually be the best strategic option
+
+- Stripe and PayPal are mainly payment processors. You still own a lot of tax/compliance work.
+- Paddle acts as merchant of record. Their pricing page says `5% + 50¢` per checkout transaction, and they position cross-border sales tax compliance, fraud, and chargeback handling as included.
+- For a small UK company selling digital subscriptions globally, that is a real advantage. HMRC’s guidance says UK digital services to UK consumers are liable to UK VAT, sales to consumers outside the UK may be taxed where the consumer is based, and if sales happen via a third-party platform or marketplace, that platform can be responsible for the VAT.
+- So the trade-off is simple: Stripe is cheaper and more flexible, Paddle is more expensive but removes more operational burden.
+
+What I would recommend you do
+
+- Immediate launch recommendation: Stripe Checkout Sessions for web and direct Windows sales, with backend-owned entitlements.
+- Alternative if global tax/admin scares you more than fees: replace Stripe with Paddle for web/direct Windows.
+- PayPal: add later if demand appears.
+- RevenueCat: useful in phase 2 if you later want Apple + Google + Stripe entitlement sync without building all of it yourself. I would not make it a Day 1 dependency.
+
+Architecture that is safe and scalable
+
+- Authentication: every user has your own internal `user_id`.
+- Entitlement model: your backend stores real billing state such as `active`, `grace`, `pending`, `on_hold`, `paused`, `expired`, `revoked`. Your app can still display only `regular` or `premium`.
+- Normalized billing model:
+  - `billing_accounts`: one row per user per provider account.
+  - `subscriptions`: one row per provider subscription or purchase token.
+  - `provider_events`: dedupe table keyed by provider + event ID.
+  - `entitlements`: derived access records your apps actually read.
+- Client contract:
+  - App logs in.
+  - App calls your backend.
+  - Backend returns something like `plan`, `isPremium`, `accessUntil`, and maybe `billingStatus`.
+  - Premium features are enforced server-side where relevant. Do not trust local device flags.
+
+The Day 1 minimum-safe billing flow
+
+- Use hosted checkout only. No custom card form.
+- Create Stripe Checkout Sessions on your server for the authenticated user.
+- Do not use generic Payment Links as your main flow.
+- On webhook receipt:
+  - verify the signature,
+  - use the raw request body where required,
+  - insert provider event ID into `provider_events` transactionally to dedupe retries,
+  - fetch current provider truth from the provider API,
+  - update `subscriptions`,
+  - derive/update `entitlements`,
+  - return `2xx`.
+- Monitoring and dashboards can wait until Day 2. Correctness cannot.
+
+Platform-specific rules you must design around
+
+- iOS:
+  - For a normal multi-platform premium app, guideline `3.1.3(b)` allows users to access content, subscriptions, or features bought on your website or other platforms only if those same items are also available as in-app purchases inside the iOS app.
+  - Guideline `3.1.3(f)` is narrower: it applies to free stand-alone companion apps to a paid web-based tool, with no purchasing in the app and no calls to action to purchase outside the app.
+  - Reader apps under `3.1.3(a)` are a separate narrow category. Apple’s reader-app support page says if you use the External Link Account Entitlement, the app cannot also offer IAP on iOS/iPadOS/tvOS.
+  - For account linking, generate a UUID per user and pass it as `appAccountToken` when starting the StoreKit purchase. Process App Store Server Notifications and App Store Server API responses on your backend.
+- Android:
+  - Use Google Play Billing in the app.
+  - Pass `setObfuscatedAccountId()` and, if useful, `setObfuscatedProfileId()` with non-PII identifiers.
+  - When RTDN arrives, call `purchases.subscriptionsv2.get()` to fetch the current subscription state and update your backend.
+  - Google says new subscription purchases must be acknowledged within 3 days or they are refunded and revoked.
+- Windows:
+  - Current Microsoft Store Policies `7.19` say non-game PC products may use either a secure third-party purchase API or Microsoft’s in-product purchase API for digital items used within the product.
+  - For subscriptions, non-game PC products may use either a secure third-party API or Microsoft recurring billing.
+  - Microsoft’s change history says developers using an allowed third-party purchase API must indicate that via the Partner Center checkbox during submission.
+  - So your Windows app is not blocked from using Stripe or Paddle.
+
+Realistic 1 to 2 day launch plan
+
+- Day 1:
+  - build login,
+  - create `billing_accounts`, `subscriptions`, `provider_events`, `entitlements`,
+  - implement Stripe Checkout Session creation,
+  - implement webhook signature verification, raw-body handling, dedupe, provider-state fetch, and transactional entitlement updates,
+  - let the Windows app open checkout in the browser,
+  - have the Windows app refresh premium status from your backend after payment.
+- Day 2:
+  - add billing management and cancellation flow,
+  - add refund and failed-payment handling,
+  - add reconciliation jobs and alerts,
+  - add annual plan if wanted,
+  - begin mobile billing integration if store accounts are already ready.
+
+Why mobile is probably not part of a true 1 to 2 day revenue launch
+
+- Apple organization enrollment can be a blocker by itself. Apple says a D-U-N-S number can take up to 5 business days to receive from D&B, plus up to 2 business days for Apple to receive the information.
+- Apple also says, on average, 90% of submissions are reviewed in less than 24 hours, but that is not a guarantee.
+- So unless your Apple and Google developer setups are already done, “start selling in 1 to 2 days” means web + direct Windows first.
+
+Alternatives I reject
+
+- PayPal-only: workable, but weaker fit than Stripe for subscription software.
+- Payment Links as main identity-binding flow: too risky unless wrapped in your own signed short-lived binding.
+- Mobile-first launch: too much policy and review risk for a 1 to 2 day target.
+- Flat one-row billing fields on `users`: breaks in multi-provider reality.
+- Trusting webhook payloads or client receipts directly: too fragile and insecure.
+
+Final recommendation
+
+If you want the fastest practical answer:
+use Stripe first, launch web + direct Windows first, keep premium status in your backend, and add mobile billing properly afterward.
+
+If you want the best strategic answer:
+use Stripe if you are UK-first and happy to own tax/compliance, or use Paddle if you want global B2C sales with far less admin from day 1.
+
+If you force me to answer only “PayPal or Stripe?”:
+Stripe.
+
+Key official sources
+
+- Stripe pricing: https://stripe.com/gb/pricing
+- Stripe Billing pricing: https://stripe.com/billing/pricing
+- Stripe Tax pricing: https://stripe.com/tax/pricing
+- Stripe webhooks: https://docs.stripe.com/webhooks
+- Stripe undelivered events/retries: https://docs.stripe.com/webhooks/process-undelivered-events
+- Stripe Checkout Sessions API: https://docs.stripe.com/api/checkout/sessions/create
+- Stripe Payment Links URL params: https://docs.stripe.com/payment-links/url-parameters
+- Stripe Managed Payments: https://docs.stripe.com/payments/managed-payments and https://stripe.com/pricing
+- PayPal UK fees: https://www.paypal.com/gb/business/paypal-business-fees
+- PayPal recurring payments: https://www.paypal.com/uk/business/accept-payments/recurring-payments
+- PayPal webhook verification: https://developer.paypal.com/docs/api/webhooks/v1/#verify-webhook-signature_post
+- Apple App Review Guidelines: https://developer.apple.com/app-store/review/guidelines/
+- Apple reader-app rules: https://developer.apple.com/support/reader-apps/
+- Apple `appAccountToken` purchase option: https://developer.apple.com/documentation/storekit/product/purchase(options:)
+- Apple App Review timing: https://developer.apple.com/app-store/review/
+- Apple D-U-N-S enrollment timing: https://developer.apple.com/support/D-U-N-S/
+- Apple Small Business Program: https://developer.apple.com/app-store/small-business-program/
+- Google Play Billing integration: https://developer.android.com/google/play/billing/integrate.html
+- Google Play subscription lifecycle: https://developer.android.com/google/play/billing/lifecycle/subscriptions
+- Google Play RTDN: https://developer.android.com/google/play/billing/rtdn-reference
+- Google Play `BillingFlowParams.Builder`: https://developer.android.com/reference/com/android/billingclient/api/BillingFlowParams.Builder
+- Google Play `purchases.subscriptionsv2.get`: https://developers.google.com/android-publisher/api-ref/rest/v3/purchases.subscriptionsv2/get
+- Google Play service fees: https://support.google.com/googleplay/android-developer/answer/112622?hl=en
+- Microsoft Store policy change history: https://learn.microsoft.com/en-us/windows/apps/publish/store-policies-change-history
+- Microsoft Store Policies version 7.19: https://learn.microsoft.com/en-us/windows/apps/publish/store-policies
+- HMRC VAT on digital services: https://www.gov.uk/guidance/the-vat-rules-if-you-supply-digital-services-to-private-consumers
+- Paddle pricing: https://www.paddle.com/pricing
+- Paddle MoR/tax responsibility: https://www.paddle.com/help/start/intro-to-paddle/how-paddle-is-able-to-take-on-your-vat-and-tax-responsibilities
+- RevenueCat Stripe web billing: https://www.revenuecat.com/docs/web/integrations/stripe
+- RevenueCat customer identity/App User ID: https://www.revenuecat.com/docs/customers/identifying-customers
+
+ASSUMPTIONS
+
+- I assumed you are selling digital premium access or premium features, not physical goods or offline services.
+- I assumed your Windows app can be distributed directly from your website, even if Microsoft Store may come later.
+- I assumed you want account-based premium access, likely subscription-based, rather than a device-only one-time unlock.
+- I assumed your Apple and Google store setups may not already be fully approved, so I treated mobile as high-risk for a 1 to 2 day launch.
+- I assumed speed to first revenue matters more than offering every payment method on day 1.

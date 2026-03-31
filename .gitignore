@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.government/
+.claude/
+codex_stderr_test.txt

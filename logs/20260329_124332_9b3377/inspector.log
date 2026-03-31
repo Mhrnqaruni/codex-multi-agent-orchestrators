@@ -1,0 +1,1606 @@
+================================================================================
+  CONGRESS SESSION: 20260329_124332_9b3377
+  Started: 2026-03-29 12:43:32
+================================================================================
+
+
+============================================================
+ROUND 1 - STARTED at 12:46:19
+============================================================
+PROMPT SENT (7731 chars):
+────────────────────────────────────────
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 1):
+============================================================
+UNDERSTANDING:
+
+You want a current, sourced summary of the new Claude features released in March 2026. I’m interpreting “Claude AI” as the main Claude product surfaces that Anthropic publicly lists in Claude release notes: `claude.ai`, desktop, mobile, Cowork, and the Excel/PowerPoint add-ins.
+
+SOLUTION:
+
+As of March 29, 2026, Anthropic’s official Claude release notes show these March 2026 feature additions:
+
+1. March 2, 2026: Memory for free users.
+Claude’s memory from chat history became available to all Claude users, including free users, across web, desktop, and mobile. Claude can synthesize a memory summary and separate project memory over time. Important nuance: chat search across past conversations is still listed as a paid-plan feature, but memory itself is now available on free accounts. Anthropic also linked memory import/export tooling alongside this rollout.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context), [import/export memory](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+
+2. March 11, 2026: Work across Excel and PowerPoint.
+Claude’s Excel and PowerPoint add-ins can now share conversation context across both apps, so Claude can read from one and act in the other without you re-explaining the task. Anthropic also added Skills support in the add-ins and support for using them through an internal LLM gateway tied to Amazon Bedrock, Google Vertex AI, or Microsoft Foundry.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [work across Excel and PowerPoint](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+
+3. March 12, 2026: Custom visuals in chat.
+Claude can now generate inline charts, diagrams, and interactive visuals directly in responses. Anthropic says this is in beta, available to all users on web and desktop, and the visuals can be interacted with, downloaded, or saved as artifacts.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [custom visuals in chat](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+
+4. March 17, 2026: Persistent Cowork thread you can control from phone or desktop.
+Pro and Max users got a persistent agent thread for Cowork that works across Claude Desktop and Claude for iOS/Android. The key change is continuity: one ongoing conversation where Claude keeps context across tasks, and can spin up Cowork sessions for knowledge work or Claude Code sessions for development work.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [assign tasks to Claude from anywhere in Cowork](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+
+5. March 23, 2026: Computer use in Cowork and Claude Code.
+Claude gained a research-preview “computer use” capability for Pro and Max plans. It can open files, use browser/dev tools, click, type, and navigate your screen to do tasks itself, with per-app permissions. Anthropic positions this as especially useful with the persistent mobile-to-desktop task handoff. Limitation: at launch this was on Claude Desktop with macOS support first, and Anthropic explicitly warns not to use it on sensitive apps/data.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [computer use help article](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork), [official blog post](https://claude.com/blog/dispatch-and-computer-use)
+
+6. March 25, 2026: Interactive apps in Claude for iOS and Android.
+Claude mobile gained support for fully interactive apps inside chats, not just text responses. Anthropic describes live charts, diagrams, dashboards, design tools, and other shareable visual assets rendered directly in the conversation. Their help docs list current interactive connectors including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [interactive connectors in Claude](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+One notable adjacent March 2026 announcement, if you meant the broader Claude ecosystem rather than just the Claude app, was March 13, 2026: Anthropic made the 1M context window generally available for Opus 4.6 and Sonnet 4.6 on the Claude Platform, and included it in Claude Code for eligible plans. I’m treating that as platform/code infrastructure, not a core `claude.ai` app feature.
+Source: [1M context GA announcement](https://claude.com/blog/1m-context-ga)
+
+Short version: the big March 2026 Claude changes were memory for free users, cross-app Excel/PowerPoint workflows, inline interactive visuals, persistent cross-device Cowork threads, computer use, and interactive mobile apps.
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude product experience, not every Claude Code-only or API-only changelog item.
+- “March 2026” means publicly announced features released through March 29, 2026.
+- I excluded temporary promotions and pricing-only changes as non-feature items.
+
+────────────────────────────────────────
+
+OUTPUT (exit=0, duration=228.7s):
+────────────────────────────────────────
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+
+────────────────────────────────────────
+STDERR:
+OpenAI Codex v0.116.0 (research preview)
+--------
+workdir: C:\Users\User\Desktop\Congress
+model: gpt-5.4
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019d37ea-0fec-7f61-8ebf-ea61b56d617d
+--------
+user
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 1):
+============================================================
+UNDERSTANDING:
+
+You want a current, sourced summary of the new Claude features released in March 2026. I’m interpreting “Claude AI” as the main Claude product surfaces that Anthropic publicly lists in Claude release notes: `claude.ai`, desktop, mobile, Cowork, and the Excel/PowerPoint add-ins.
+
+SOLUTION:
+
+As of March 29, 2026, Anthropic’s official Claude release notes show these March 2026 feature additions:
+
+1. March 2, 2026: Memory for free users.
+Claude’s memory from chat history became available to all Claude users, including free users, across web, desktop, and mobile. Claude can synthesize a memory summary and separate project memory over time. Important nuance: chat search across past conversations is still listed as a paid-plan feature, but memory itself is now available on free accounts. Anthropic also linked memory import/export tooling alongside this rollout.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context), [import/export memory](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+
+2. March 11, 2026: Work across Excel and PowerPoint.
+Claude’s Excel and PowerPoint add-ins can now share conversation context across both apps, so Claude can read from one and act in the other without you re-explaining the task. Anthropic also added Skills support in the add-ins and support for using them through an internal LLM gateway tied to Amazon Bedrock, Google Vertex AI, or Microsoft Foundry.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [work across Excel and PowerPoint](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+
+3. March 12, 2026: Custom visuals in chat.
+Claude can now generate inline charts, diagrams, and interactive visuals directly in responses. Anthropic says this is in beta, available to all users on web and desktop, and the visuals can be interacted with, downloaded, or saved as artifacts.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [custom visuals in chat](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+
+4. March 17, 2026: Persistent Cowork thread you can control from phone or desktop.
+Pro and Max users got a persistent agent thread for Cowork that works across Claude Desktop and Claude for iOS/Android. The key change is continuity: one ongoing conversation where Claude keeps context across tasks, and can spin up Cowork sessions for knowledge work or Claude Code sessions for development work.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [assign tasks to Claude from anywhere in Cowork](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+
+5. March 23, 2026: Computer use in Cowork and Claude Code.
+Claude gained a research-preview “computer use” capability for Pro and Max plans. It can open files, use browser/dev tools, click, type, and navigate your screen to do tasks itself, with per-app permissions. Anthropic positions this as especially useful with the persistent mobile-to-desktop task handoff. Limitation: at launch this was on Claude Desktop with macOS support first, and Anthropic explicitly warns not to use it on sensitive apps/data.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [computer use help article](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork), [official blog post](https://claude.com/blog/dispatch-and-computer-use)
+
+6. March 25, 2026: Interactive apps in Claude for iOS and Android.
+Claude mobile gained support for fully interactive apps inside chats, not just text responses. Anthropic describes live charts, diagrams, dashboards, design tools, and other shareable visual assets rendered directly in the conversation. Their help docs list current interactive connectors including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [interactive connectors in Claude](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+One notable adjacent March 2026 announcement, if you meant the broader Claude ecosystem rather than just the Claude app, was March 13, 2026: Anthropic made the 1M context window generally available for Opus 4.6 and Sonnet 4.6 on the Claude Platform, and included it in Claude Code for eligible plans. I’m treating that as platform/code infrastructure, not a core `claude.ai` app feature.
+Source: [1M context GA announcement](https://claude.com/blog/1m-context-ga)
+
+Short version: the big March 2026 Claude changes were memory for free users, cross-app Excel/PowerPoint workflows, inline interactive visuals, persistent cross-device Cowork threads, computer use, and interactive mobile apps.
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude product experience, not every Claude Code-only or API-only changelog item.
+- “March 2026” means publicly announced features released through March 29, 2026.
+- I excluded temporary promotions and pricing-only changes as non-feature items.
+
+mcp startup: no servers
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com Claude release notes March 2026 Anthropic support release notes
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context
+🌐 Searching the web...
+🌐 Searched: 'share the full context' in https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/support "March 2026" "Claude in Chrome"
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "March" "2026" "Claude in Chrome"
+🌐 Searching the web...
+🌐 Searched: 'download' in https://support.claude.com/en/articles/13979539-custom-visuals-in-chat
+🌐 Searching the web...
+🌐 Searched: 'share a single thread' in https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint
+🌐 Searching the web...
+🌐 Searched: 'Dispatch' in https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 2026 Anthropic Claude "March 2026" "Product announcements"
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/code-review
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "Auto mode for Claude Code"
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/auto-mode
+🌐 Searching the web...
+🌐 Searched: 'Claude Code' in https://claude.com/blog/1m-context-ga
+🌐 Searching the web...
+🌐 Searched the web
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13945233-use-claude-in-excel-and-powerpoint-with-an-llm-gateway
+codex
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+tokens used
+88,346
+
+────────────────────────────────────────
+
+============================================================
+ROUND 2 - STARTED at 12:54:40
+============================================================
+PROMPT SENT (15637 chars):
+────────────────────────────────────────
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+IMPORTANT: You have reviewed previous versions. Here are your prior reviews:
+
+--- Your Round 1 Review (summary) ---
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 1 ---
+
+Check whether the researcher addressed your previous feedback. Don't re-flag issues that were properly fixed.
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 2):
+============================================================
+UNDERSTANDING:
+
+You want a current, complete summary of the new Claude features released in March 2026. To avoid the earlier scope mistake, I’m treating “Claude AI” broadly as the full Claude ecosystem: Claude app, Claude Code, Cowork, Office add-ins, and official March Claude/Claude Code platform launches. This is verified against Anthropic’s own sources as of March 29, 2026.
+
+SOLUTION:
+
+I agree with the inspector feedback. I changed the earlier answer in four ways:
+1. I expanded the scope beyond main app release notes, because that narrower scope missed official March launches. I added the missing official items: March 3 skill-creator improvements, March 9 Code Review, March 13 1M context GA, and March 24 Auto mode.
+2. I separated March 17 from March 23. March 17 is the persistent cross-device Cowork thread; March 23 is computer use in Cowork and Claude Code. This keeps the timeline correct.
+3. I added availability and constraint notes to every item, because several launches only work on certain plans, apps, or operating systems.
+4. I normalized the list to date + feature + who gets it + main limitation, so it is easier to verify.
+
+Complete March 2026 Claude feature list I could verify from Anthropic’s official sources:
+
+1. March 2, 2026: Memory expanded to free users.
+What changed: Claude memory from chat history became available to all users on web, desktop, and mobile. Claude can build a memory summary and separate project memory; memory import/export was also available.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: This was an expansion, not a brand-new memory feature. Chat search remained paid-only, while memory updates on a 24-hour cycle.
+
+2. March 3, 2026: Skill-creator got testing and benchmarking upgrades.
+What changed: Skill authors got eval generation, benchmark mode, multi-agent parallel evaluation, comparator agents, and description-tuning help so skills trigger more reliably.
+Who gets it: Available in Claude.ai and Cowork; also via plugin/repo for Claude Code users.
+Main limits: This is a niche feature aimed at people building Agent Skills, not general chat users.
+
+3. March 9, 2026: Code Review launched for Claude Code.
+What changed: Claude Code can run a deeper multi-agent PR review flow that looks for bugs in parallel, verifies them, ranks severity, and posts both a summary and inline comments.
+Who gets it: Research preview for Team and Enterprise.
+Main limits: Anthropic positions it as more thorough and more expensive than the lighter Claude Code GitHub Action; reviews usually take around 20 minutes.
+
+4. March 11, 2026: Excel and PowerPoint got cross-app context, skills, and third-party platform support.
+What changed: Claude for Excel and Claude for PowerPoint can share one conversation across open files, use skills inside the add-ins, and support deployment through Amazon Bedrock, Google Vertex AI, Microsoft Foundry, or an LLM gateway.
+Who gets it: Paid plans; Mac and Windows users of the add-ins.
+Main limits: Both add-ins must be installed and open. Team/Enterprise may need admin enablement. Claude can only work with open files, and cross-app chat history is not saved between sessions.
+
+5. March 12, 2026: Claude added inline custom visuals in chat.
+What changed: Claude can generate interactive charts, diagrams, and other visuals directly inside a conversation, then revise them as the chat continues.
+Who gets it: All plan types on Claude web and desktop; beta.
+Main limits: Not available in iOS, Android, or Cowork; visuals are ephemeral unless you download them or save them as artifacts.
+
+6. March 13, 2026: 1M context went generally available.
+What changed: Opus 4.6 and Sonnet 4.6 got the full 1M context window at standard pricing, full rate limits, no beta header requirement, and a higher media limit of up to 600 images/PDF pages. Claude Code also got automatic 1M context on Opus 4.6.
+Who gets it: Claude Platform users of Opus 4.6/Sonnet 4.6; Claude Code Max, Team, and Enterprise users on Opus 4.6.
+Main limits: This is mainly a Claude Platform and Claude Code launch, not a core claude.ai chat-surface feature.
+
+7. March 17, 2026: Persistent cross-device Cowork thread launched.
+What changed: Cowork added one continuous thread you can use from phone or desktop, so Claude keeps task context across sessions and can route work into Cowork or Claude Code as needed.
+Who gets it: Research preview for Pro and Max.
+Main limits: Requires both the Claude Desktop app and the Claude mobile app. Your computer must stay awake and Claude Desktop must remain open.
+
+8. March 23, 2026: Computer use arrived in Cowork and Claude Code.
+What changed: Claude can directly use your computer when connectors are not enough: clicking, typing, opening files, using the browser, and running dev tools.
+Who gets it: Research preview for Pro and Max.
+Main limits: Launch support was macOS Claude Desktop; the help docs said Windows support was coming soon. Anthropic explicitly warns this is early and should not be used on sensitive apps or data.
+
+9. March 24, 2026: Auto mode launched for Claude Code.
+What changed: Claude Code got a new permission mode where a classifier auto-approves lower-risk actions and blocks or escalates riskier ones, making long-running tasks less interruptive than the default mode and safer than skipping permissions entirely.
+Who gets it: At launch, research preview on Team; Anthropic said Enterprise and API support would follow in the coming days.
+Main limits: It is not risk-free, Anthropic still recommends isolated environments, and it can add some token, cost, and latency overhead.
+
+10. March 25, 2026: Interactive apps expanded to Claude mobile.
+What changed: Claude for iOS and Android gained support for fully interactive apps inside chats, letting live interfaces render directly in the conversation instead of only text. Current help docs list examples like Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Who gets it: The March 25 release note was specifically about iOS/Android; current help docs show interactive connectors across Claude, Cowork, Desktop, and mobile.
+Main limits: This appears to be a mobile expansion of an earlier interactive-connector capability, not the first launch of interactive connectors overall.
+
+What I did not count as features:
+- The March 13 to March 27 off-peak 2x usage promotion, because it was a temporary promotion, not a product capability.
+- Events, webinars, and opinion/strategy blog posts, because they are not feature launches.
+
+If you only mean the main Claude app rather than the whole Claude ecosystem, the core app-facing March items are March 2, March 12, March 17, March 23, and March 25, plus the March 11 Office add-in update.
+
+Official sources:
+- [Release notes](https://support.claude.com/en/articles/12138966-release-notes)
+- [Memory/search](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)
+- [Memory import/export](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+- [Skill-creator improvements](https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills)
+- [Code Review](https://claude.com/blog/code-review)
+- [Excel/PowerPoint update](https://claude.com/blog/claude-excel-powerpoint-updates)
+- [Cross-app Office help](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+- [Office third-party platform help](https://support.claude.com/en/articles/13945233-use-claude-for-excel-and-powerpoint-with-third-party-platforms)
+- [Custom visuals blog](https://claude.com/blog/claude-builds-visuals)
+- [Custom visuals help](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+- [1M context GA](https://claude.com/blog/1m-context-ga)
+- [Persistent Cowork thread](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+- [Computer use blog](https://claude.com/blog/dispatch-and-computer-use)
+- [Computer use help](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork)
+- [Auto mode](https://claude.com/blog/auto-mode)
+- [Interactive connectors](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+ASSUMPTIONS:
+
+- “Claude AI” means the full Claude ecosystem, not only the claude.ai chat webpage.
+- “New feature in March 2026” includes both brand-new capabilities and major March rollouts, expansions, or GA changes.
+- I limited this to official Anthropic sources and excluded temporary promotions, pricing-only changes, events, and non-product editorial posts.
+
+────────────────────────────────────────
+
+OUTPUT (exit=0, duration=229.2s):
+────────────────────────────────────────
+## Summary
+The researcher fixed most of the prior review: the March 17 vs. March 23 chronology is now separated correctly, and plan/platform constraints are surfaced much better. The remaining problem is completeness and one rollout-detail error. Because the answer explicitly claims to cover the full Claude ecosystem, including platform launches, it still misses official March 2026 items from Anthropic’s own [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). No code-specific security or performance issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is still false under the answer’s own scope  
+Location: `UNDERSTANDING` and the sentence `Complete March 2026 Claude feature list I could verify from Anthropic’s official sources`  
+Problem: The answer says it covers the “full Claude ecosystem” and “official March Claude/Claude Code platform launches,” but it omits two official March Claude Platform releases from Anthropic’s [platform release notes](https://platform.claude.com/docs/en/release-notes/overview): March 16, 2026 (`thinking.display: "omitted"` for extended thinking) and March 18, 2026 (new capability fields on the Models API). Since the answer already includes a platform-only item on March 13, this omission makes the completeness claim false again.  
+Fix:
+```text
+Add the missing official March platform items, or explicitly narrow scope to user-facing app features only.
+
+11. March 16, 2026: Extended thinking display control on Claude Platform.
+What changed: A new `thinking.display: "omitted"` option lets developers suppress thinking text while preserving signatures for multi-turn continuity.
+Who gets it: Claude Platform users using extended thinking.
+Main limits: Developer/API feature, not a claude.ai chat-surface feature.
+
+12. March 18, 2026: Models API capability fields.
+What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object.
+Who gets it: Claude Platform developers.
+Main limits: Metadata/discovery feature, not a consumer-app feature.
+```
+
+- [MEDIUM] March 2 memory bullet overstates what rolled out to all users  
+Location: Item 1, especially `memory import/export was also available` plus `Who gets it: Free, Pro, Max, Team, Enterprise.`  
+Problem: The main [memory article](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) says memory from chat history is available to all users on web, desktop, and mobile. But the separate [import/export article](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude) says memory imports are only available for Free, Pro, and Max on web and Claude Desktop. The current wording blurs these distinct rollout limits and makes the March 2 expansion sound broader than it was.  
+Fix:
+```text
+1. March 2, 2026: Memory from chat history expanded to free users.
+What changed: Memory became available to free users on web, desktop, and mobile.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: Search past chats remained paid-only. Memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+```
+
+- [LOW] Source coverage does not match the claimed methodology  
+Location: `Official sources`  
+Problem: The answer claims to cover platform launches, but it does not cite the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). That source gap is what caused the missing March 16 and March 18 items.  
+Fix:
+```text
+Add:
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+
+And clarify scope up front:
+- either "This list includes Claude Platform/API release-note items"
+- or "This list excludes low-level Claude Platform/API changes"
+```
+
+## Improvement Suggestions
+1. Resolve scope once, then enforce it consistently. If the list includes platform/API items like March 13, it must also include the March 16 and March 18 platform releases.
+2. Keep each bullet strictly to `date + feature + who gets it + main limitation`, but do not mix supporting or adjacent subfeatures with narrower rollout rules into the same availability line.
+3. Add the official Claude Platform release notes to the source set whenever claiming a “full ecosystem” March feature inventory.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+
+────────────────────────────────────────
+STDERR:
+OpenAI Codex v0.116.0 (research preview)
+--------
+workdir: C:\Users\User\Desktop\Congress
+model: gpt-5.4
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019d37f1-b5f2-7bd1-bf1a-f0e14625cb9b
+--------
+user
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+IMPORTANT: You have reviewed previous versions. Here are your prior reviews:
+
+--- Your Round 1 Review (summary) ---
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 1 ---
+
+Check whether the researcher addressed your previous feedback. Don't re-flag issues that were properly fixed.
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 2):
+============================================================
+UNDERSTANDING:
+
+You want a current, complete summary of the new Claude features released in March 2026. To avoid the earlier scope mistake, I’m treating “Claude AI” broadly as the full Claude ecosystem: Claude app, Claude Code, Cowork, Office add-ins, and official March Claude/Claude Code platform launches. This is verified against Anthropic’s own sources as of March 29, 2026.
+
+SOLUTION:
+
+I agree with the inspector feedback. I changed the earlier answer in four ways:
+1. I expanded the scope beyond main app release notes, because that narrower scope missed official March launches. I added the missing official items: March 3 skill-creator improvements, March 9 Code Review, March 13 1M context GA, and March 24 Auto mode.
+2. I separated March 17 from March 23. March 17 is the persistent cross-device Cowork thread; March 23 is computer use in Cowork and Claude Code. This keeps the timeline correct.
+3. I added availability and constraint notes to every item, because several launches only work on certain plans, apps, or operating systems.
+4. I normalized the list to date + feature + who gets it + main limitation, so it is easier to verify.
+
+Complete March 2026 Claude feature list I could verify from Anthropic’s official sources:
+
+1. March 2, 2026: Memory expanded to free users.
+What changed: Claude memory from chat history became available to all users on web, desktop, and mobile. Claude can build a memory summary and separate project memory; memory import/export was also available.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: This was an expansion, not a brand-new memory feature. Chat search remained paid-only, while memory updates on a 24-hour cycle.
+
+2. March 3, 2026: Skill-creator got testing and benchmarking upgrades.
+What changed: Skill authors got eval generation, benchmark mode, multi-agent parallel evaluation, comparator agents, and description-tuning help so skills trigger more reliably.
+Who gets it: Available in Claude.ai and Cowork; also via plugin/repo for Claude Code users.
+Main limits: This is a niche feature aimed at people building Agent Skills, not general chat users.
+
+3. March 9, 2026: Code Review launched for Claude Code.
+What changed: Claude Code can run a deeper multi-agent PR review flow that looks for bugs in parallel, verifies them, ranks severity, and posts both a summary and inline comments.
+Who gets it: Research preview for Team and Enterprise.
+Main limits: Anthropic positions it as more thorough and more expensive than the lighter Claude Code GitHub Action; reviews usually take around 20 minutes.
+
+4. March 11, 2026: Excel and PowerPoint got cross-app context, skills, and third-party platform support.
+What changed: Claude for Excel and Claude for PowerPoint can share one conversation across open files, use skills inside the add-ins, and support deployment through Amazon Bedrock, Google Vertex AI, Microsoft Foundry, or an LLM gateway.
+Who gets it: Paid plans; Mac and Windows users of the add-ins.
+Main limits: Both add-ins must be installed and open. Team/Enterprise may need admin enablement. Claude can only work with open files, and cross-app chat history is not saved between sessions.
+
+5. March 12, 2026: Claude added inline custom visuals in chat.
+What changed: Claude can generate interactive charts, diagrams, and other visuals directly inside a conversation, then revise them as the chat continues.
+Who gets it: All plan types on Claude web and desktop; beta.
+Main limits: Not available in iOS, Android, or Cowork; visuals are ephemeral unless you download them or save them as artifacts.
+
+6. March 13, 2026: 1M context went generally available.
+What changed: Opus 4.6 and Sonnet 4.6 got the full 1M context window at standard pricing, full rate limits, no beta header requirement, and a higher media limit of up to 600 images/PDF pages. Claude Code also got automatic 1M context on Opus 4.6.
+Who gets it: Claude Platform users of Opus 4.6/Sonnet 4.6; Claude Code Max, Team, and Enterprise users on Opus 4.6.
+Main limits: This is mainly a Claude Platform and Claude Code launch, not a core claude.ai chat-surface feature.
+
+7. March 17, 2026: Persistent cross-device Cowork thread launched.
+What changed: Cowork added one continuous thread you can use from phone or desktop, so Claude keeps task context across sessions and can route work into Cowork or Claude Code as needed.
+Who gets it: Research preview for Pro and Max.
+Main limits: Requires both the Claude Desktop app and the Claude mobile app. Your computer must stay awake and Claude Desktop must remain open.
+
+8. March 23, 2026: Computer use arrived in Cowork and Claude Code.
+What changed: Claude can directly use your computer when connectors are not enough: clicking, typing, opening files, using the browser, and running dev tools.
+Who gets it: Research preview for Pro and Max.
+Main limits: Launch support was macOS Claude Desktop; the help docs said Windows support was coming soon. Anthropic explicitly warns this is early and should not be used on sensitive apps or data.
+
+9. March 24, 2026: Auto mode launched for Claude Code.
+What changed: Claude Code got a new permission mode where a classifier auto-approves lower-risk actions and blocks or escalates riskier ones, making long-running tasks less interruptive than the default mode and safer than skipping permissions entirely.
+Who gets it: At launch, research preview on Team; Anthropic said Enterprise and API support would follow in the coming days.
+Main limits: It is not risk-free, Anthropic still recommends isolated environments, and it can add some token, cost, and latency overhead.
+
+10. March 25, 2026: Interactive apps expanded to Claude mobile.
+What changed: Claude for iOS and Android gained support for fully interactive apps inside chats, letting live interfaces render directly in the conversation instead of only text. Current help docs list examples like Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Who gets it: The March 25 release note was specifically about iOS/Android; current help docs show interactive connectors across Claude, Cowork, Desktop, and mobile.
+Main limits: This appears to be a mobile expansion of an earlier interactive-connector capability, not the first launch of interactive connectors overall.
+
+What I did not count as features:
+- The March 13 to March 27 off-peak 2x usage promotion, because it was a temporary promotion, not a product capability.
+- Events, webinars, and opinion/strategy blog posts, because they are not feature launches.
+
+If you only mean the main Claude app rather than the whole Claude ecosystem, the core app-facing March items are March 2, March 12, March 17, March 23, and March 25, plus the March 11 Office add-in update.
+
+Official sources:
+- [Release notes](https://support.claude.com/en/articles/12138966-release-notes)
+- [Memory/search](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)
+- [Memory import/export](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+- [Skill-creator improvements](https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills)
+- [Code Review](https://claude.com/blog/code-review)
+- [Excel/PowerPoint update](https://claude.com/blog/claude-excel-powerpoint-updates)
+- [Cross-app Office help](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+- [Office third-party platform help](https://support.claude.com/en/articles/13945233-use-claude-for-excel-and-powerpoint-with-third-party-platforms)
+- [Custom visuals blog](https://claude.com/blog/claude-builds-visuals)
+- [Custom visuals help](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+- [1M context GA](https://claude.com/blog/1m-context-ga)
+- [Persistent Cowork thread](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+- [Computer use blog](https://claude.com/blog/dispatch-and-computer-use)
+- [Computer use help](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork)
+- [Auto mode](https://claude.com/blog/auto-mode)
+- [Interactive connectors](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+ASSUMPTIONS:
+
+- “Claude AI” means the full Claude ecosystem, not only the claude.ai chat webpage.
+- “New feature in March 2026” includes both brand-new capabilities and major March rollouts, expansions, or GA changes.
+- I limited this to official Anthropic sources and excluded temporary promotions, pricing-only changes, events, and non-product editorial posts.
+
+mcp startup: no servers
+codex
+I’m validating the researcher’s claims against Anthropic’s official March 2026 sources, with attention to the scope issue from the prior round and whether any March launches are still missing or mischaracterized.
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/12138966-release-notes March 2026 Claude release notes
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: '## March 2026' in https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com custom visuals in chat March 2026 all plans web desktop beta
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 2026 Claude product announcements Claude app Claude Code Anthropic
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "March" "2026" "claude.com/blog/" "Product announcements" "Claude Code"
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13454812-using-interactive-connectors-in-claude
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/13947068 assign tasks to Claude from anywhere in Cowork
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/13947068 "Assign tasks to Claude from anywhere in Cowork"
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/13947068 Claude from anywhere in Cowork
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/13947068 dispatch Claude support
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13892150-work-across-apps-with-cowork
+🌐 Searching the web...
+🌐 Searched: 'Claude Code' in https://claude.com/blog/1m-context-ga
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/12123587-importing-and-exporting-your-memory-from-claude
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 2026 "auto mode" "Claude Code"
+🌐 Searching the web...
+🌐 Searched: https://platform.claude.com/docs/en/release-notes/overview
+🌐 Searching the web...
+🌐 Searched: https://platform.claude.com/docs/en/release-notes/overview
+🌐 Searching the web...
+🌐 Searched: site:github.com/anthropics/claude-code CHANGELOG.md March 2026 Claude Code
+🌐 Searching the web...
+🌐 Searched: 'classifier' in https://claude.com/blog/auto-mode
+🌐 Searching the web...
+🌐 Searched: 'parallel' in https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "March 25, 2026" Claude product announcements
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles "Claude in Chrome" "March 2026" release notes
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles "Claude in Chrome Release Notes" March 2026
+codex
+## Summary
+The researcher fixed most of the prior review: the March 17 vs. March 23 chronology is now separated correctly, and plan/platform constraints are surfaced much better. The remaining problem is completeness and one rollout-detail error. Because the answer explicitly claims to cover the full Claude ecosystem, including platform launches, it still misses official March 2026 items from Anthropic’s own [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). No code-specific security or performance issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is still false under the answer’s own scope  
+Location: `UNDERSTANDING` and the sentence `Complete March 2026 Claude feature list I could verify from Anthropic’s official sources`  
+Problem: The answer says it covers the “full Claude ecosystem” and “official March Claude/Claude Code platform launches,” but it omits two official March Claude Platform releases from Anthropic’s [platform release notes](https://platform.claude.com/docs/en/release-notes/overview): March 16, 2026 (`thinking.display: "omitted"` for extended thinking) and March 18, 2026 (new capability fields on the Models API). Since the answer already includes a platform-only item on March 13, this omission makes the completeness claim false again.  
+Fix:
+```text
+Add the missing official March platform items, or explicitly narrow scope to user-facing app features only.
+
+11. March 16, 2026: Extended thinking display control on Claude Platform.
+What changed: A new `thinking.display: "omitted"` option lets developers suppress thinking text while preserving signatures for multi-turn continuity.
+Who gets it: Claude Platform users using extended thinking.
+Main limits: Developer/API feature, not a claude.ai chat-surface feature.
+
+12. March 18, 2026: Models API capability fields.
+What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object.
+Who gets it: Claude Platform developers.
+Main limits: Metadata/discovery feature, not a consumer-app feature.
+```
+
+- [MEDIUM] March 2 memory bullet overstates what rolled out to all users  
+Location: Item 1, especially `memory import/export was also available` plus `Who gets it: Free, Pro, Max, Team, Enterprise.`  
+Problem: The main [memory article](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) says memory from chat history is available to all users on web, desktop, and mobile. But the separate [import/export article](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude) says memory imports are only available for Free, Pro, and Max on web and Claude Desktop. The current wording blurs these distinct rollout limits and makes the March 2 expansion sound broader than it was.  
+Fix:
+```text
+1. March 2, 2026: Memory from chat history expanded to free users.
+What changed: Memory became available to free users on web, desktop, and mobile.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: Search past chats remained paid-only. Memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+```
+
+- [LOW] Source coverage does not match the claimed methodology  
+Location: `Official sources`  
+Problem: The answer claims to cover platform launches, but it does not cite the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). That source gap is what caused the missing March 16 and March 18 items.  
+Fix:
+```text
+Add:
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+
+And clarify scope up front:
+- either "This list includes Claude Platform/API release-note items"
+- or "This list excludes low-level Claude Platform/API changes"
+```
+
+## Improvement Suggestions
+1. Resolve scope once, then enforce it consistently. If the list includes platform/API items like March 13, it must also include the March 16 and March 18 platform releases.
+2. Keep each bullet strictly to `date + feature + who gets it + main limitation`, but do not mix supporting or adjacent subfeatures with narrower rollout rules into the same availability line.
+3. Add the official Claude Platform release notes to the source set whenever claiming a “full ecosystem” March feature inventory.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+tokens used
+124,562
+
+────────────────────────────────────────
+
+============================================================
+ROUND 3 - STARTED at 13:03:30
+============================================================
+PROMPT SENT (21906 chars):
+────────────────────────────────────────
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+IMPORTANT: You have reviewed previous versions. Here are your prior reviews:
+
+--- Your Round 1 Review (summary) ---
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 1 ---
+
+--- Your Round 2 Review (summary) ---
+## Summary
+The researcher fixed most of the prior review: the March 17 vs. March 23 chronology is now separated correctly, and plan/platform constraints are surfaced much better. The remaining problem is completeness and one rollout-detail error. Because the answer explicitly claims to cover the full Claude ecosystem, including platform launches, it still misses official March 2026 items from Anthropic’s own [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). No code-specific security or performance issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is still false under the answer’s own scope  
+Location: `UNDERSTANDING` and the sentence `Complete March 2026 Claude feature list I could verify from Anthropic’s official sources`  
+Problem: The answer says it covers the “full Claude ecosystem” and “official March Claude/Claude Code platform launches,” but it omits two official March Claude Platform releases from Anthropic’s [platform release notes](https://platform.claude.com/docs/en/release-notes/overview): March 16, 2026 (`thinking.display: "omitted"` for extended thinking) and March 18, 2026 (new capability fields on the Models API). Since the answer already includes a platform-only item on March 13, this omission makes the completeness claim false again.  
+Fix:
+```text
+Add the missing official March platform items, or explicitly narrow scope to user-facing app features only.
+
+11. March 16, 2026: Extended thinking display control on Claude Platform.
+What changed: A new `thinking.display: "omitted"` option lets developers suppress thinking text while preserving signatures for multi-turn continuity.
+Who gets it: Claude Platform users using extended thinking.
+Main limits: Developer/API feature, not a claude.ai chat-surface feature.
+
+12. March 18, 2026: Models API capability fields.
+What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object.
+Who gets it: Claude Platform developers.
+Main limits: Metadata/discovery feature, not a consumer-app feature.
+```
+
+- [MEDIUM] March 2 memory bullet overstates what rolled out to all users  
+Location: Item 1, especially `memory import/export was also available` plus `Who gets it: Free, Pro, Max, Team, Enterprise.`  
+Problem: The main [memory article](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) says memory from chat history is available to all users on web, desktop, and mobile. But the separate [import/export article](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude) says memory imports are only available for Free, Pro, and Max on web and Claude Desktop. The current wording blurs these distinct rollout limits and makes the March 2 expansion sound broader than it was.  
+Fix:
+```text
+1. March 2, 2026: Memory from chat history expanded to free users.
+What changed: Memory became available to free users on web, desktop, and mobile.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: Search past chats remained paid-only. Memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+```
+
+- [LOW] Source coverage does not match the claimed methodology  
+Location: `Official sources`  
+Problem: The answer claims to cover platform launches, but it does not cite the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). That source gap is what caused the missing March 16 and March 18 items.  
+Fix:
+```text
+Add:
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+
+And clarify scope up front:
+- either "This list includes Claude Platform/API release-note items"
+- or "This list excludes low-level Claude Platform/API changes"
+```
+
+## Improvement Suggestions
+1. Resolve scope once, then enforce it consistently. If the list includes platform/API items like March 13, it must also include the March 16 and March 18 platform releases.
+2. Keep each bullet strictly to `date + feature + who gets it + main limitation`, but do not mix supporting or adjacent subfeatures with narrower rollout rules into the same availability line.
+3. Add the official Claude Platform release notes to the source set whenever claiming a “full ecosystem” March feature inventory.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 2 ---
+
+Check whether the researcher addressed your previous feedback. Don't re-flag issues that were properly fixed.
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 3):
+============================================================
+UNDERSTANDING:
+
+You want a current, official summary of Claude’s new March 2026 features. I’m treating “Claude AI” broadly, but carefully: Claude apps (`claude.ai`, desktop, mobile), Cowork, Claude Code, Office add-ins, and official March 2026 Claude Platform/API release-note items, all verified as of March 29, 2026. I’m counting both brand-new features and major March rollouts/GA changes, but excluding temporary promotions and low-level repo changelog entries.
+
+SOLUTION:
+
+What I changed based on the inspector feedback, and why:
+
+1. I added the missing March 16 and March 18 Claude Platform releases because the previous “full ecosystem” claim was incomplete without them.
+2. I corrected the March 2 memory item so it no longer implies memory import/export rolled out to everyone; only memory from chat history did.
+3. I added the Claude Platform release notes to the source set and tightened the scope so “complete” now means complete across official app release notes, platform release notes, and March product-announcement posts.
+4. I also tightened the March 11 Office wording because Anthropic’s current help docs show that third-party platform support is separate from cross-app workflows and skills; those are not yet available through the third-party path.
+
+Scope choice and trade-offs:
+
+I rejected a narrow `claude.ai`-only scope because that would miss official March launches for Claude Code, Cowork, and Claude Platform. I also rejected a “every Claude Code changelog entry” scope because that would turn this into a repository-level engineering changelog rather than a public feature inventory. So the list below is the complete March 2026 public feature inventory I could verify from Anthropic’s official release-note and announcement sources.
+
+Complete March 2026 Claude feature list:
+
+1. March 2, 2026: Memory from chat history expanded to free users. What changed: Claude memory became available to free users on web, desktop, and mobile, including memory summaries and separate project memory. Who gets it: Free, Pro, Max, Team, and Enterprise users. Main limits: search past chats remained paid-only, memory synthesis updates on a 24-hour cycle, and memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+
+2. March 3, 2026: Skill-creator got testing and benchmarking upgrades. What changed: skill authors can now generate evals, run benchmark mode, use multi-agent parallel evaluation, compare versions with comparator agents, and tune descriptions so skills trigger more reliably. Who gets it: available in Claude.ai and Cowork, with plugin/repo access for Claude Code users. Main limits: this is mainly for people authoring Agent Skills, not general chat users.
+
+3. March 9, 2026: Code Review launched for Claude Code. What changed: Claude Code can dispatch a team of agents on each PR, look for bugs in parallel, verify findings, rank severity, and post both a summary and inline comments. Who gets it: research preview for Team and Enterprise. Main limits: it is deliberately deeper and more expensive than the lighter Claude Code GitHub Action, and Anthropic says reviews average around 20 minutes.
+
+4. March 11, 2026: Excel and PowerPoint got three related upgrades. What changed: Claude can now carry context across the Excel and PowerPoint add-ins and work across open files; Anthropic also added skills inside the add-ins; and it added a third-party deployment path for organizations using Bedrock, Vertex AI, Microsoft Foundry, or an LLM gateway. Who gets it: paid add-in users, plus org-managed third-party deployment for enterprise environments. Main limits: both add-ins and target files must be open, cross-app chat history is not saved between sessions, Team/Enterprise may need owner enablement, and current help docs say the third-party path does not yet support working across apps or skills.
+
+5. March 12, 2026: Custom visuals in chat launched. What changed: Claude can generate inline interactive charts, diagrams, and other visuals directly in its responses, and you can download them or save them as artifacts. Who gets it: all Claude users on web and desktop. Main limits: beta only, not available in iOS, Android, or Cowork, and visuals are not saved automatically.
+
+6. March 13, 2026: 1M context window became generally available for Opus 4.6 and Sonnet 4.6. What changed: standard pricing now applies across the full 1M context window, standard rate limits apply at every context length, media limits increased to 600 images/PDF pages, and no beta header is required. Claude Code on Opus 4.6 also got automatic 1M context for eligible plans. Who gets it: Claude Platform users of Opus 4.6/Sonnet 4.6, plus Claude Code Max, Team, and Enterprise users on Opus 4.6. Main limits: this is primarily a Platform and Claude Code feature, not a regular consumer-chat surface feature.
+
+7. March 16, 2026: Extended thinking display control launched on Claude Platform. What changed: developers can set `thinking.display: "omitted"` so thinking text is suppressed while the signature is preserved for multi-turn continuity. Who gets it: Claude Platform users using extended thinking. Main limits: developer/API feature only; billing does not change.
+
+8. March 17, 2026: Persistent Dispatch/Cowork thread launched across phone and desktop. What changed: Claude got one continuous thread you can access from Claude Desktop and Claude for iOS/Android, so context carries across tasks and Claude can spin work into Cowork or Claude Code sessions. Who gets it: research preview for Pro and Max; Anthropic said rollout started on March 17 for Max and over the next two days for Pro. Main limits: it requires both the desktop and mobile apps, your computer must stay awake with Claude Desktop open, and there is only one continuous thread.
+
+9. March 18, 2026: Models API capability fields were added. What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object so developers can discover what each model supports. Who gets it: Claude Platform developers. Main limits: this is a metadata/discovery API feature, not a consumer app feature.
+
+10. March 23, 2026: Computer use arrived in Cowork and Claude Code, and Dispatch expanded further. What changed: Claude can directly use your computer when connectors are not enough, including clicking, typing, opening files, using the browser, and running dev tools; Anthropic also positioned this as making Dispatch more useful, including in Claude Code. Who gets it: research preview for Pro and Max. Main limits: on March 23 launch, Anthropic’s blog said support was macOS-only; Anthropic’s current help docs still describe Windows support as “coming soon.” It is early, runs outside Cowork’s VM sandbox, requires per-app permission, and Anthropic warns against using it with sensitive apps or data.
+
+11. March 24, 2026: Auto mode launched for Claude Code. What changed: Claude Code got a new permissions mode where a classifier auto-allows lower-risk actions and blocks or escalates riskier ones before they run. Who gets it: research preview on Team at launch, with Enterprise and API rollout stated as coming in the following days. Main limits: safer than `--dangerously-skip-permissions`, but not risk-free; Anthropic still recommends isolated environments, and it can add some token, latency, and cost overhead.
+
+12. March 25, 2026: Interactive apps came to Claude for iOS and Android. What changed: the mobile app can now render fully interactive apps directly in conversation, such as dashboards, task boards, and design tools, instead of only text responses. Who gets it: Claude mobile users. Main limits: this is best read as a new mobile rollout of the broader interactive-connectors system, not the first-ever launch of interactive connectors overall. Anthropic’s current help docs list examples including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+
+What I did not count:
+
+1. The March 13 to March 27 off-peak 2x usage promotion, because it was a temporary usage promotion, not a product capability.
+2. Non-feature essays, customer stories, and workflow/thought-piece blog posts.
+3. Commit-level or implementation-level changes from the `claude-code` GitHub changelog that Anthropic did not present as standalone March product launches.
+
+Official sources used:
+
+- Claude app release notes: https://support.claude.com/en/articles/12138966-release-notes
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+- Memory and chat search: https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context
+- Memory import/export: https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude
+- Skill-creator updates: https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills
+- Code Review: https://claude.com/blog/code-review
+- Work across Excel and PowerPoint: https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint
+- Office third-party platforms: https://support.claude.com/en/articles/13945233-use-claude-for-excel-and-powerpoint-with-third-party-platforms
+- Custom visuals: https://support.claude.com/en/articles/13979539-custom-visuals-in-chat
+- 1M context GA: https://claude.com/blog/1m-context-ga
+- Persistent Dispatch/Cowork thread: https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork
+- Computer use help: https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork
+- Computer use blog: https://claude.com/blog/dispatch-and-computer-use
+- Auto mode: https://claude.com/blog/auto-mode
+- Interactive connectors: https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude ecosystem, not just the main `claude.ai` chat page.
+- “March 2026” means features officially announced or released between March 1, 2026 and March 29, 2026, the current verified date.
+- “All new features” includes both brand-new capabilities and major March rollouts/GA changes.
+- I intentionally excluded temporary promotions and low-level repository changelog entries so the answer stays aligned to official public product launches and release-note items.
+
+────────────────────────────────────────
+
+OUTPUT (exit=0, duration=215.4s):
+────────────────────────────────────────
+## Summary
+Round 3 is materially better than Round 2. The prior high-severity completeness problem is fixed: the missing March 16 and March 18 Claude Platform items are now included, the March 2 memory rollout is scoped more accurately, and the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview) are now in the source set. No code-specific security, performance, race-condition, or null/undefined issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [MEDIUM] March 17 entry still partially backdates Claude Code availability
+- Location: Item 8, especially `Claude can spin work into Cowork or Claude Code sessions`
+- Problem: Anthropic’s March 23 post says Dispatch was released “last week” in Cowork and was “now available in Claude Code” on March 23, not March 17. The current March 17 wording still partially reintroduces the chronology blur from Round 1.
+- Fix:
+```text
+8. March 17, 2026: Persistent Dispatch/Cowork thread launched across phone and desktop.
+What changed: Claude got one continuous Cowork thread across Claude Desktop and Claude for iOS/Android, so context carries across tasks.
+Who gets it: Research preview for Pro and Max.
+Main limits: Requires both desktop and mobile apps, your computer must stay awake with Claude Desktop open, and there is only one continuous thread.
+
+10. March 23, 2026: Computer use arrived in Cowork and Claude Code, and Dispatch expanded to Claude Code.
+What changed: Claude can directly use your computer when connectors are not enough, and Dispatch is now available in Claude Code as well as Cowork.
+```
+
+- [LOW] March 25 entry overstates novelty of mobile interactive apps
+- Location: Item 12, especially `instead of only text responses`
+- Problem: Anthropic’s January 26 interactive-connectors announcement said the feature was available in Claude on “mobile, web and desktop.” That means “instead of only text responses” is too absolute. The March 25 release-note item is better framed as a mobile-app rollout/update of the broader interactive-connectors system, not a first move from text-only mobile behavior.
+- Fix:
+```text
+12. March 25, 2026: Interactive apps were added/refined in Claude for iOS and Android.
+What changed: Anthropic’s March 25 mobile release note brought interactive apps explicitly to the iOS/Android app surface, extending the broader interactive-connectors system already announced earlier in 2026.
+Main limits: This is not the first-ever launch of interactive connectors overall; cite the January 26 announcement if making that comparison.
+```
+
+## Improvement Suggestions
+1. Keep each dated bullet launch-scoped. Do not use later-updated help docs to enrich an earlier date unless the added behavior is separately dated.
+2. When you say a rollout is “not the first-ever launch overall,” cite the earlier launch directly. Here, the January 26 interactive-connectors announcement should be cited if you keep that comparison.
+3. Preserve the current structure. It is now close to publication quality once the March 17 and March 25 phrasing is tightened.
+
+## Verdict
+VERDICT: APPROVED
+
+────────────────────────────────────────
+STDERR:
+OpenAI Codex v0.116.0 (research preview)
+--------
+workdir: C:\Users\User\Desktop\Congress
+model: gpt-5.4
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019d37f9-cb27-73d0-ab47-93d76d28bf44
+--------
+user
+You are the INSPECTOR/SUPERVISOR agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a ruthless but fair reviewer, security auditor, and quality inspector.
+- You receive the ORIGINAL user request and the RESEARCHER's response.
+- Your job is to find EVERY flaw, bug, security issue, logic error, and missed edge case.
+
+IMPORTANT: You have reviewed previous versions. Here are your prior reviews:
+
+--- Your Round 1 Review (summary) ---
+## Summary
+Spot-checking against Anthropic’s official [release notes](https://support.claude.com/en/articles/12138966-release-notes), [Code Review announcement](https://claude.com/blog/code-review), [1M context GA post](https://claude.com/blog/1m-context-ga), and [Auto mode announcement](https://claude.com/blog/auto-mode) shows the six listed release-note items are real. The main failure is completeness: the answer treats “all new Claude features in March 2026” as “all app release-note items,” which is narrower than the user asked for. No code-specific security or performance defects apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is false under the user’s wording  
+Location: `UNDERSTANDING`, the overall framing, and the “One notable adjacent March 2026 announcement” paragraph.  
+Problem: The original request was “tell all new feature of claude ai in march 2026.” The response silently narrows scope to the main app release notes, then presents the result as exhaustive. That misses official March launches outside those six bullets, including [Code Review for Claude Code](https://claude.com/blog/code-review) on March 9, 2026, and [Auto mode for Claude Code](https://claude.com/blog/auto-mode) on March 24, 2026. It also demotes [1M context GA](https://claude.com/blog/1m-context-ga) on March 13, 2026 to an “adjacent” item even though it is an official March Claude feature announcement.  
+Fix:
+```text
+If you mean the full Claude ecosystem, March 2026 launches included:
+- Mar 2: Memory for free users
+- Mar 9: Code Review for Claude Code
+- Mar 11: Work across Excel and PowerPoint
+- Mar 12: Custom visuals in chat
+- Mar 13: 1M context GA for Opus 4.6 / Sonnet 4.6, also added to Claude Code
+- Mar 17: Persistent Cowork thread across phone and desktop
+- Mar 23: Computer use in Cowork and Claude Code
+- Mar 24: Auto mode for Claude Code
+- Mar 25: Interactive apps/connectors in Claude mobile
+
+If you only mean the main Claude app release notes, say that explicitly before listing them.
+```
+
+- [MEDIUM] March 17 and March 23 are slightly conflated  
+Location: bullets 4 and 5, using [release notes](https://support.claude.com/en/articles/12138966-release-notes) plus the later-updated [Dispatch/computer use post](https://claude.com/blog/dispatch-and-computer-use).  
+Problem: The March 17 bullet says the persistent thread can spin up Claude Code sessions, but Anthropic’s March 23 post says Dispatch was released the previous week in Cowork and was “now available in Claude Code” on March 23. That blurs the chronology and partially backdates the Claude Code/Dispatch expansion.  
+Fix:
+```text
+Mar 17: Persistent cross-device Cowork thread for Pro/Max.
+Mar 23: Computer use arrives in Cowork and Claude Code, and Dispatch is extended/improved for Claude Code workflows.
+```
+
+- [LOW] Eligibility and platform constraints are inconsistently surfaced  
+Location: bullets 2, 4, and 5; see [Excel/PowerPoint cross-app docs](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint), [Cowork dispatch docs](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork), and [computer use docs](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork).  
+Problem: Some caveats are included, others are omitted. Examples: cross-app Office work requires a paid plan and both add-ins; the persistent Cowork thread requires both desktop and mobile apps; computer use launched in the macOS desktop app with Windows support coming soon. These are important usability constraints for a “what’s new” answer.  
+Fix:
+```text
+Add short availability notes to each item, e.g.:
+- Mar 11: Work across Excel and PowerPoint (paid plans; both add-ins required)
+- Mar 17: Persistent Cowork thread (Pro/Max; desktop + mobile required)
+- Mar 23: Computer use (Pro/Max; macOS desktop at launch)
+```
+
+## Improvement Suggestions
+1. Resolve scope before claiming completeness. Either answer for the full Claude ecosystem or explicitly label the list as “main Claude app release-note features.”
+2. Keep chronology strict. Do not use later-updated help articles to enrich earlier dates unless the added behavior is separately dated.
+3. Normalize each bullet to `date + feature + who gets it + key limitation` so the answer is easier to verify quickly.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 1 ---
+
+--- Your Round 2 Review (summary) ---
+## Summary
+The researcher fixed most of the prior review: the March 17 vs. March 23 chronology is now separated correctly, and plan/platform constraints are surfaced much better. The remaining problem is completeness and one rollout-detail error. Because the answer explicitly claims to cover the full Claude ecosystem, including platform launches, it still misses official March 2026 items from Anthropic’s own [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). No code-specific security or performance issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [HIGH] Exhaustive claim is still false under the answer’s own scope  
+Location: `UNDERSTANDING` and the sentence `Complete March 2026 Claude feature list I could verify from Anthropic’s official sources`  
+Problem: The answer says it covers the “full Claude ecosystem” and “official March Claude/Claude Code platform launches,” but it omits two official March Claude Platform releases from Anthropic’s [platform release notes](https://platform.claude.com/docs/en/release-notes/overview): March 16, 2026 (`thinking.display: "omitted"` for extended thinking) and March 18, 2026 (new capability fields on the Models API). Since the answer already includes a platform-only item on March 13, this omission makes the completeness claim false again.  
+Fix:
+```text
+Add the missing official March platform items, or explicitly narrow scope to user-facing app features only.
+
+11. March 16, 2026: Extended thinking display control on Claude Platform.
+What changed: A new `thinking.display: "omitted"` option lets developers suppress thinking text while preserving signatures for multi-turn continuity.
+Who gets it: Claude Platform users using extended thinking.
+Main limits: Developer/API feature, not a claude.ai chat-surface feature.
+
+12. March 18, 2026: Models API capability fields.
+What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object.
+Who gets it: Claude Platform developers.
+Main limits: Metadata/discovery feature, not a consumer-app feature.
+```
+
+- [MEDIUM] March 2 memory bullet overstates what rolled out to all users  
+Location: Item 1, especially `memory import/export was also available` plus `Who gets it: Free, Pro, Max, Team, Enterprise.`  
+Problem: The main [memory article](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) says memory from chat history is available to all users on web, desktop, and mobile. But the separate [import/export article](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude) says memory imports are only available for Free, Pro, and Max on web and Claude Desktop. The current wording blurs these distinct rollout limits and makes the March 2 expansion sound broader than it was.  
+Fix:
+```text
+1. March 2, 2026: Memory from chat history expanded to free users.
+What changed: Memory became available to free users on web, desktop, and mobile.
+Who gets it: Free, Pro, Max, Team, Enterprise.
+Main limits: Search past chats remained paid-only. Memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+```
+
+- [LOW] Source coverage does not match the claimed methodology  
+Location: `Official sources`  
+Problem: The answer claims to cover platform launches, but it does not cite the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview). That source gap is what caused the missing March 16 and March 18 items.  
+Fix:
+```text
+Add:
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+
+And clarify scope up front:
+- either "This list includes Claude Platform/API release-note items"
+- or "This list excludes low-level Claude Platform/API changes"
+```
+
+## Improvement Suggestions
+1. Resolve scope once, then enforce it consistently. If the list includes platform/API items like March 13, it must also include the March 16 and March 18 platform releases.
+2. Keep each bullet strictly to `date + feature + who gets it + main limitation`, but do not mix supporting or adjacent subfeatures with narrower rollout rules into the same availability line.
+3. Add the official Claude Platform release notes to the source set whenever claiming a “full ecosystem” March feature inventory.
+
+## Verdict
+VERDICT: NEEDS_REVISION
+--- End Round 2 ---
+
+Check whether the researcher addressed your previous feedback. Don't re-flag issues that were properly fixed.
+
+
+YOUR TASKS:
+1. VERIFY: Does the researcher's output actually answer the user's original question completely?
+2. BUGS: Find all bugs, logic errors, off-by-one errors, race conditions, null/undefined risks.
+3. SECURITY: Identify security vulnerabilities (injection, XSS, CSRF, path traversal, etc).
+4. PERFORMANCE: Flag performance issues, unnecessary complexity, O(n^2) where O(n) suffices.
+5. EDGE CASES: What inputs/scenarios would break this? Empty inputs, huge inputs, unicode, concurrency.
+6. COMPLETENESS: Is anything missing? Unhandled error cases? Missing validation?
+7. BEST PRACTICES: Industry conventions, naming, structure, documentation.
+8. IMPROVEMENTS: Suggest specific, actionable improvements WITH code examples when applicable.
+
+CRITICAL RULES:
+1. DO NOT create any files. Your text response IS your output.
+2. Be SPECIFIC. Don't say "improve error handling" — say exactly WHERE and HOW.
+3. Provide code snippets for your suggested fixes when possible.
+4. Rate the severity of each issue: CRITICAL / HIGH / MEDIUM / LOW.
+5. At the VERY END of your review, on its own line, you MUST write exactly one of:
+   VERDICT: NEEDS_REVISION
+   VERDICT: APPROVED
+   Use NEEDS_REVISION if ANY critical or high severity issues remain.
+   Use APPROVED only if the work is solid (only medium/low issues remain).
+
+OUTPUT FORMAT:
+## Summary
+Brief overall assessment (2-3 sentences).
+
+## Issues Found
+For each issue:
+- [SEVERITY] Issue title
+- Location: where exactly
+- Problem: what's wrong
+- Fix: specific fix with code
+
+## Improvement Suggestions
+Actionable improvements ranked by impact.
+
+## Verdict
+VERDICT: NEEDS_REVISION or VERDICT: APPROVED
+
+
+============================================================
+ORIGINAL USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+============================================================
+RESEARCHER'S OUTPUT (Round 3):
+============================================================
+UNDERSTANDING:
+
+You want a current, official summary of Claude’s new March 2026 features. I’m treating “Claude AI” broadly, but carefully: Claude apps (`claude.ai`, desktop, mobile), Cowork, Claude Code, Office add-ins, and official March 2026 Claude Platform/API release-note items, all verified as of March 29, 2026. I’m counting both brand-new features and major March rollouts/GA changes, but excluding temporary promotions and low-level repo changelog entries.
+
+SOLUTION:
+
+What I changed based on the inspector feedback, and why:
+
+1. I added the missing March 16 and March 18 Claude Platform releases because the previous “full ecosystem” claim was incomplete without them.
+2. I corrected the March 2 memory item so it no longer implies memory import/export rolled out to everyone; only memory from chat history did.
+3. I added the Claude Platform release notes to the source set and tightened the scope so “complete” now means complete across official app release notes, platform release notes, and March product-announcement posts.
+4. I also tightened the March 11 Office wording because Anthropic’s current help docs show that third-party platform support is separate from cross-app workflows and skills; those are not yet available through the third-party path.
+
+Scope choice and trade-offs:
+
+I rejected a narrow `claude.ai`-only scope because that would miss official March launches for Claude Code, Cowork, and Claude Platform. I also rejected a “every Claude Code changelog entry” scope because that would turn this into a repository-level engineering changelog rather than a public feature inventory. So the list below is the complete March 2026 public feature inventory I could verify from Anthropic’s official release-note and announcement sources.
+
+Complete March 2026 Claude feature list:
+
+1. March 2, 2026: Memory from chat history expanded to free users. What changed: Claude memory became available to free users on web, desktop, and mobile, including memory summaries and separate project memory. Who gets it: Free, Pro, Max, Team, and Enterprise users. Main limits: search past chats remained paid-only, memory synthesis updates on a 24-hour cycle, and memory import is a separate experimental feature limited to Free, Pro, and Max on web and Claude Desktop.
+
+2. March 3, 2026: Skill-creator got testing and benchmarking upgrades. What changed: skill authors can now generate evals, run benchmark mode, use multi-agent parallel evaluation, compare versions with comparator agents, and tune descriptions so skills trigger more reliably. Who gets it: available in Claude.ai and Cowork, with plugin/repo access for Claude Code users. Main limits: this is mainly for people authoring Agent Skills, not general chat users.
+
+3. March 9, 2026: Code Review launched for Claude Code. What changed: Claude Code can dispatch a team of agents on each PR, look for bugs in parallel, verify findings, rank severity, and post both a summary and inline comments. Who gets it: research preview for Team and Enterprise. Main limits: it is deliberately deeper and more expensive than the lighter Claude Code GitHub Action, and Anthropic says reviews average around 20 minutes.
+
+4. March 11, 2026: Excel and PowerPoint got three related upgrades. What changed: Claude can now carry context across the Excel and PowerPoint add-ins and work across open files; Anthropic also added skills inside the add-ins; and it added a third-party deployment path for organizations using Bedrock, Vertex AI, Microsoft Foundry, or an LLM gateway. Who gets it: paid add-in users, plus org-managed third-party deployment for enterprise environments. Main limits: both add-ins and target files must be open, cross-app chat history is not saved between sessions, Team/Enterprise may need owner enablement, and current help docs say the third-party path does not yet support working across apps or skills.
+
+5. March 12, 2026: Custom visuals in chat launched. What changed: Claude can generate inline interactive charts, diagrams, and other visuals directly in its responses, and you can download them or save them as artifacts. Who gets it: all Claude users on web and desktop. Main limits: beta only, not available in iOS, Android, or Cowork, and visuals are not saved automatically.
+
+6. March 13, 2026: 1M context window became generally available for Opus 4.6 and Sonnet 4.6. What changed: standard pricing now applies across the full 1M context window, standard rate limits apply at every context length, media limits increased to 600 images/PDF pages, and no beta header is required. Claude Code on Opus 4.6 also got automatic 1M context for eligible plans. Who gets it: Claude Platform users of Opus 4.6/Sonnet 4.6, plus Claude Code Max, Team, and Enterprise users on Opus 4.6. Main limits: this is primarily a Platform and Claude Code feature, not a regular consumer-chat surface feature.
+
+7. March 16, 2026: Extended thinking display control launched on Claude Platform. What changed: developers can set `thinking.display: "omitted"` so thinking text is suppressed while the signature is preserved for multi-turn continuity. Who gets it: Claude Platform users using extended thinking. Main limits: developer/API feature only; billing does not change.
+
+8. March 17, 2026: Persistent Dispatch/Cowork thread launched across phone and desktop. What changed: Claude got one continuous thread you can access from Claude Desktop and Claude for iOS/Android, so context carries across tasks and Claude can spin work into Cowork or Claude Code sessions. Who gets it: research preview for Pro and Max; Anthropic said rollout started on March 17 for Max and over the next two days for Pro. Main limits: it requires both the desktop and mobile apps, your computer must stay awake with Claude Desktop open, and there is only one continuous thread.
+
+9. March 18, 2026: Models API capability fields were added. What changed: `GET /v1/models` and `GET /v1/models/{model_id}` now return `max_input_tokens`, `max_tokens`, and a `capabilities` object so developers can discover what each model supports. Who gets it: Claude Platform developers. Main limits: this is a metadata/discovery API feature, not a consumer app feature.
+
+10. March 23, 2026: Computer use arrived in Cowork and Claude Code, and Dispatch expanded further. What changed: Claude can directly use your computer when connectors are not enough, including clicking, typing, opening files, using the browser, and running dev tools; Anthropic also positioned this as making Dispatch more useful, including in Claude Code. Who gets it: research preview for Pro and Max. Main limits: on March 23 launch, Anthropic’s blog said support was macOS-only; Anthropic’s current help docs still describe Windows support as “coming soon.” It is early, runs outside Cowork’s VM sandbox, requires per-app permission, and Anthropic warns against using it with sensitive apps or data.
+
+11. March 24, 2026: Auto mode launched for Claude Code. What changed: Claude Code got a new permissions mode where a classifier auto-allows lower-risk actions and blocks or escalates riskier ones before they run. Who gets it: research preview on Team at launch, with Enterprise and API rollout stated as coming in the following days. Main limits: safer than `--dangerously-skip-permissions`, but not risk-free; Anthropic still recommends isolated environments, and it can add some token, latency, and cost overhead.
+
+12. March 25, 2026: Interactive apps came to Claude for iOS and Android. What changed: the mobile app can now render fully interactive apps directly in conversation, such as dashboards, task boards, and design tools, instead of only text responses. Who gets it: Claude mobile users. Main limits: this is best read as a new mobile rollout of the broader interactive-connectors system, not the first-ever launch of interactive connectors overall. Anthropic’s current help docs list examples including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+
+What I did not count:
+
+1. The March 13 to March 27 off-peak 2x usage promotion, because it was a temporary usage promotion, not a product capability.
+2. Non-feature essays, customer stories, and workflow/thought-piece blog posts.
+3. Commit-level or implementation-level changes from the `claude-code` GitHub changelog that Anthropic did not present as standalone March product launches.
+
+Official sources used:
+
+- Claude app release notes: https://support.claude.com/en/articles/12138966-release-notes
+- Claude Platform release notes: https://platform.claude.com/docs/en/release-notes/overview
+- Memory and chat search: https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context
+- Memory import/export: https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude
+- Skill-creator updates: https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills
+- Code Review: https://claude.com/blog/code-review
+- Work across Excel and PowerPoint: https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint
+- Office third-party platforms: https://support.claude.com/en/articles/13945233-use-claude-for-excel-and-powerpoint-with-third-party-platforms
+- Custom visuals: https://support.claude.com/en/articles/13979539-custom-visuals-in-chat
+- 1M context GA: https://claude.com/blog/1m-context-ga
+- Persistent Dispatch/Cowork thread: https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork
+- Computer use help: https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork
+- Computer use blog: https://claude.com/blog/dispatch-and-computer-use
+- Auto mode: https://claude.com/blog/auto-mode
+- Interactive connectors: https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude ecosystem, not just the main `claude.ai` chat page.
+- “March 2026” means features officially announced or released between March 1, 2026 and March 29, 2026, the current verified date.
+- “All new features” includes both brand-new capabilities and major March rollouts/GA changes.
+- I intentionally excluded temporary promotions and low-level repository changelog entries so the answer stays aligned to official public product launches and release-note items.
+
+mcp startup: no servers
+codex
+Reviewing the researcher’s Round 3 answer against Anthropic’s official March 2026 sources now. I’m checking both whether the previous gaps were fixed and whether any new completeness or chronology errors remain.
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles/12138966-release-notes March 2026 Claude release notes
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: 'March 18, 2026' in https://platform.claude.com/docs/en/release-notes/overview
+🌐 Searching the web...
+🌐 Searched: 'March 2026' in https://support.claude.com/en/articles/12138966-release-notes
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 2026 Anthropic Claude blog March 2026 Claude
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog/ March 2026 interactive apps Claude iOS Android
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog
+🌐 Searching the web...
+🌐 Searched: 'claude.ai' in https://claude.com/blog/improving-skill-creator-test-measure-and-refine-agent-skills
+🌐 Searching the web...
+🌐 Searched: 'research preview' in https://claude.com/blog/code-review
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork
+🌐 Searching the web...
+🌐 Searched: 'previous week' in https://claude.com/blog/dispatch-and-computer-use
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 26 2026 Claude feature Anthropic
+🌐 Searching the web...
+🌐 Searched the web
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/claude-excel-powerpoint-updates
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/interactive-tools-in-claude
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/claude-builds-visuals
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13979539-custom-visuals-in-chat
+🌐 Searching the web...
+🌐 Searched: 'Team' in https://claude.com/blog/auto-mode
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork
+🌐 Searching the web...
+🌐 Searched: 'LLM gateway' in https://claude.com/blog/claude-excel-powerpoint-updates
+🌐 Searching the web...
+🌐 Searched: 'Claude Code' in https://claude.com/blog/1m-context-ga
+🌐 Searching the web...
+🌐 Searched: site:code.claude.com March 2026 Claude Code release notes
+🌐 Searching the web...
+🌐 Searched: 'Working Across Apps' in https://support.claude.com/en/articles/13945233-use-claude-in-excel-and-powerpoint-with-an-llm-gateway
+codex
+## Summary
+Round 3 is materially better than Round 2. The prior high-severity completeness problem is fixed: the missing March 16 and March 18 Claude Platform items are now included, the March 2 memory rollout is scoped more accurately, and the [Claude Platform release notes](https://platform.claude.com/docs/en/release-notes/overview) are now in the source set. No code-specific security, performance, race-condition, or null/undefined issues apply here because this is prose, not executable code.
+
+## Issues Found
+- [MEDIUM] March 17 entry still partially backdates Claude Code availability
+- Location: Item 8, especially `Claude can spin work into Cowork or Claude Code sessions`
+- Problem: Anthropic’s March 23 post says Dispatch was released “last week” in Cowork and was “now available in Claude Code” on March 23, not March 17. The current March 17 wording still partially reintroduces the chronology blur from Round 1.
+- Fix:
+```text
+8. March 17, 2026: Persistent Dispatch/Cowork thread launched across phone and desktop.
+What changed: Claude got one continuous Cowork thread across Claude Desktop and Claude for iOS/Android, so context carries across tasks.
+Who gets it: Research preview for Pro and Max.
+Main limits: Requires both desktop and mobile apps, your computer must stay awake with Claude Desktop open, and there is only one continuous thread.
+
+10. March 23, 2026: Computer use arrived in Cowork and Claude Code, and Dispatch expanded to Claude Code.
+What changed: Claude can directly use your computer when connectors are not enough, and Dispatch is now available in Claude Code as well as Cowork.
+```
+
+- [LOW] March 25 entry overstates novelty of mobile interactive apps
+- Location: Item 12, especially `instead of only text responses`
+- Problem: Anthropic’s January 26 interactive-connectors announcement said the feature was available in Claude on “mobile, web and desktop.” That means “instead of only text responses” is too absolute. The March 25 release-note item is better framed as a mobile-app rollout/update of the broader interactive-connectors system, not a first move from text-only mobile behavior.
+- Fix:
+```text
+12. March 25, 2026: Interactive apps were added/refined in Claude for iOS and Android.
+What changed: Anthropic’s March 25 mobile release note brought interactive apps explicitly to the iOS/Android app surface, extending the broader interactive-connectors system already announced earlier in 2026.
+Main limits: This is not the first-ever launch of interactive connectors overall; cite the January 26 announcement if making that comparison.
+```
+
+## Improvement Suggestions
+1. Keep each dated bullet launch-scoped. Do not use later-updated help docs to enrich an earlier date unless the added behavior is separately dated.
+2. When you say a rollout is “not the first-ever launch overall,” cite the earlier launch directly. Here, the January 26 interactive-connectors announcement should be cited if you keep that comparison.
+3. Preserve the current structure. It is now close to publication quality once the March 17 and March 25 phrasing is tightened.
+
+## Verdict
+VERDICT: APPROVED
+tokens used
+109,385
+
+────────────────────────────────────────

@@ -1,0 +1,181 @@
+Agent: researcher
+Round: 1
+Return Code: 0
+Duration: 151.2s
+============================================================
+OUTPUT:
+============================================================
+UNDERSTANDING:
+
+You want a current, sourced summary of the new Claude features released in March 2026. I’m interpreting “Claude AI” as the main Claude product surfaces that Anthropic publicly lists in Claude release notes: `claude.ai`, desktop, mobile, Cowork, and the Excel/PowerPoint add-ins.
+
+SOLUTION:
+
+As of March 29, 2026, Anthropic’s official Claude release notes show these March 2026 feature additions:
+
+1. March 2, 2026: Memory for free users.
+Claude’s memory from chat history became available to all Claude users, including free users, across web, desktop, and mobile. Claude can synthesize a memory summary and separate project memory over time. Important nuance: chat search across past conversations is still listed as a paid-plan feature, but memory itself is now available on free accounts. Anthropic also linked memory import/export tooling alongside this rollout.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context), [import/export memory](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+
+2. March 11, 2026: Work across Excel and PowerPoint.
+Claude’s Excel and PowerPoint add-ins can now share conversation context across both apps, so Claude can read from one and act in the other without you re-explaining the task. Anthropic also added Skills support in the add-ins and support for using them through an internal LLM gateway tied to Amazon Bedrock, Google Vertex AI, or Microsoft Foundry.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [work across Excel and PowerPoint](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+
+3. March 12, 2026: Custom visuals in chat.
+Claude can now generate inline charts, diagrams, and interactive visuals directly in responses. Anthropic says this is in beta, available to all users on web and desktop, and the visuals can be interacted with, downloaded, or saved as artifacts.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [custom visuals in chat](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+
+4. March 17, 2026: Persistent Cowork thread you can control from phone or desktop.
+Pro and Max users got a persistent agent thread for Cowork that works across Claude Desktop and Claude for iOS/Android. The key change is continuity: one ongoing conversation where Claude keeps context across tasks, and can spin up Cowork sessions for knowledge work or Claude Code sessions for development work.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [assign tasks to Claude from anywhere in Cowork](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+
+5. March 23, 2026: Computer use in Cowork and Claude Code.
+Claude gained a research-preview “computer use” capability for Pro and Max plans. It can open files, use browser/dev tools, click, type, and navigate your screen to do tasks itself, with per-app permissions. Anthropic positions this as especially useful with the persistent mobile-to-desktop task handoff. Limitation: at launch this was on Claude Desktop with macOS support first, and Anthropic explicitly warns not to use it on sensitive apps/data.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [computer use help article](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork), [official blog post](https://claude.com/blog/dispatch-and-computer-use)
+
+6. March 25, 2026: Interactive apps in Claude for iOS and Android.
+Claude mobile gained support for fully interactive apps inside chats, not just text responses. Anthropic describes live charts, diagrams, dashboards, design tools, and other shareable visual assets rendered directly in the conversation. Their help docs list current interactive connectors including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [interactive connectors in Claude](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+One notable adjacent March 2026 announcement, if you meant the broader Claude ecosystem rather than just the Claude app, was March 13, 2026: Anthropic made the 1M context window generally available for Opus 4.6 and Sonnet 4.6 on the Claude Platform, and included it in Claude Code for eligible plans. I’m treating that as platform/code infrastructure, not a core `claude.ai` app feature.
+Source: [1M context GA announcement](https://claude.com/blog/1m-context-ga)
+
+Short version: the big March 2026 Claude changes were memory for free users, cross-app Excel/PowerPoint workflows, inline interactive visuals, persistent cross-device Cowork threads, computer use, and interactive mobile apps.
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude product experience, not every Claude Code-only or API-only changelog item.
+- “March 2026” means publicly announced features released through March 29, 2026.
+- I excluded temporary promotions and pricing-only changes as non-feature items.
+
+
+============================================================
+STDERR:
+============================================================
+OpenAI Codex v0.116.0 (research preview)
+--------
+workdir: C:\Users\User\Desktop\Congress
+model: gpt-5.4
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019d37e7-8ff2-7f91-8977-d98133913f82
+--------
+user
+You are the RESEARCHER/PLANNER agent in a multi-agent AI system called "Congress".
+
+YOUR ROLE:
+- You are a world-class engineer, architect, analyst, and problem solver.
+- When given a question or task, you must deeply analyze it, research all angles, and produce the BEST possible solution.
+- Think step by step. Consider edge cases, performance, maintainability, and security.
+- Your output should be thorough, well-structured, and production-ready.
+- You can handle ANY type of task: coding, analysis, research, architecture, debugging, etc.
+
+CRITICAL RULES:
+1. DO NOT create any files as output (no .md, no .txt, no any file). Your text response IS your only output.
+2. DO NOT ask follow-up questions. Work with what you have and state your assumptions.
+3. If the task involves code, make it complete, runnable, well-commented, and secure.
+4. If analyzing something, be exhaustive and precise.
+5. Structure your response clearly with labeled sections.
+6. Always explain your reasoning, trade-offs considered, and alternatives rejected.
+7. Search the internet and read files as needed — be thorough.
+8. DO NOT wrap your entire response in a markdown code block — write it as plain structured text.
+
+OUTPUT FORMAT:
+- UNDERSTANDING: Brief summary of what you understood the task to be.
+- SOLUTION: Your detailed solution/analysis.
+- ASSUMPTIONS: List any assumptions you made.
+
+
+============================================================
+USER REQUEST:
+============================================================
+tell all new feature of claude ai in march 2026
+
+mcp startup: no servers
+codex
+I’m checking Anthropic’s March 2026 announcements and release notes first, then I’ll consolidate only the publicly announced Claude features from that month with exact dates and sources.
+🌐 Searching the web...
+🌐 Searched: site:anthropic.com March 2026 Claude feature announcement Anthropic
+🌐 Searching the web...
+🌐 Searched: site:anthropic.com "March" "2026" "Claude" "What\'s new"
+🌐 Searching the web...
+🌐 Searched: site:docs.anthropic.com/en/release-notes Claude March 2026
+🌐 Searching the web...
+🌐 Searched: https://docs.anthropic.com/en/release-notes/claude-apps
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude
+🌐 Searching the web...
+🌐 Searched: https://support.claude.com/en/articles/13979539-custom-visuals-in-chat
+🌐 Searching the web...
+🌐 Searched: 'Dispatch' in https://claude.com/blog/dispatch-and-computer-use
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog March 24 2026 interactive connectors inside Claude
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "Advancing Claude for Excel and PowerPoint"
+🌐 Searching the web...
+🌐 Searched: site:support.claude.com/en/articles March 2026 Claude Code release notes
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "Your favorite work tools are now interactive connectors inside Claude"
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "1M context is now generally available for Opus 4.6 and Sonnet 4.6"
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog/ "March 2026" "Product announcements" Claude
+🌐 Searching the web...
+🌐 Searched: '## Claude can remember' in https://support.claude.com/en/articles/11817273-using-claude-s-chat-search-and-memory-to-build-on-previous-context
+codex
+I’ve narrowed this to Anthropic’s official Claude release notes and linked help/blog pages for March 2026. Next I’m separating core Claude app features from broader platform-only announcements so the answer stays accurate instead of mixing scopes.
+🌐 Searching the web...
+🌐 Searched: https://claude.com/blog/1m-context-ga
+🌐 Searching the web...
+🌐 Searched: site:claude.com/blog "Auto mode for Claude Code"
+🌐 Searching the web...
+🌐 Searched: 'Export your Claude memory' in https://support.claude.com/en/articles/12123587-importing-and-exporting-your-memory-from-claude
+codex
+UNDERSTANDING:
+
+You want a current, sourced summary of the new Claude features released in March 2026. I’m interpreting “Claude AI” as the main Claude product surfaces that Anthropic publicly lists in Claude release notes: `claude.ai`, desktop, mobile, Cowork, and the Excel/PowerPoint add-ins.
+
+SOLUTION:
+
+As of March 29, 2026, Anthropic’s official Claude release notes show these March 2026 feature additions:
+
+1. March 2, 2026: Memory for free users.
+Claude’s memory from chat history became available to all Claude users, including free users, across web, desktop, and mobile. Claude can synthesize a memory summary and separate project memory over time. Important nuance: chat search across past conversations is still listed as a paid-plan feature, but memory itself is now available on free accounts. Anthropic also linked memory import/export tooling alongside this rollout.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [chat search and memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context), [import/export memory](https://support.claude.com/en/articles/12123587-import-and-export-your-memory-from-claude)
+
+2. March 11, 2026: Work across Excel and PowerPoint.
+Claude’s Excel and PowerPoint add-ins can now share conversation context across both apps, so Claude can read from one and act in the other without you re-explaining the task. Anthropic also added Skills support in the add-ins and support for using them through an internal LLM gateway tied to Amazon Bedrock, Google Vertex AI, or Microsoft Foundry.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [work across Excel and PowerPoint](https://support.claude.com/en/articles/13892150-work-across-excel-and-powerpoint)
+
+3. March 12, 2026: Custom visuals in chat.
+Claude can now generate inline charts, diagrams, and interactive visuals directly in responses. Anthropic says this is in beta, available to all users on web and desktop, and the visuals can be interacted with, downloaded, or saved as artifacts.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [custom visuals in chat](https://support.claude.com/en/articles/13979539-custom-visuals-in-chat)
+
+4. March 17, 2026: Persistent Cowork thread you can control from phone or desktop.
+Pro and Max users got a persistent agent thread for Cowork that works across Claude Desktop and Claude for iOS/Android. The key change is continuity: one ongoing conversation where Claude keeps context across tasks, and can spin up Cowork sessions for knowledge work or Claude Code sessions for development work.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [assign tasks to Claude from anywhere in Cowork](https://support.claude.com/en/articles/13947068-assign-tasks-to-claude-from-anywhere-in-cowork)
+
+5. March 23, 2026: Computer use in Cowork and Claude Code.
+Claude gained a research-preview “computer use” capability for Pro and Max plans. It can open files, use browser/dev tools, click, type, and navigate your screen to do tasks itself, with per-app permissions. Anthropic positions this as especially useful with the persistent mobile-to-desktop task handoff. Limitation: at launch this was on Claude Desktop with macOS support first, and Anthropic explicitly warns not to use it on sensitive apps/data.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [computer use help article](https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork), [official blog post](https://claude.com/blog/dispatch-and-computer-use)
+
+6. March 25, 2026: Interactive apps in Claude for iOS and Android.
+Claude mobile gained support for fully interactive apps inside chats, not just text responses. Anthropic describes live charts, diagrams, dashboards, design tools, and other shareable visual assets rendered directly in the conversation. Their help docs list current interactive connectors including Amplitude, Asana, Box, Canva, Clay, Figma, Hex, and Slack.
+Sources: [Claude release notes](https://support.claude.com/en/articles/12138966-release-notes), [interactive connectors in Claude](https://support.claude.com/en/articles/13454812-use-interactive-connectors-in-claude)
+
+One notable adjacent March 2026 announcement, if you meant the broader Claude ecosystem rather than just the Claude app, was March 13, 2026: Anthropic made the 1M context window generally available for Opus 4.6 and Sonnet 4.6 on the Claude Platform, and included it in Claude Code for eligible plans. I’m treating that as platform/code infrastructure, not a core `claude.ai` app feature.
+Source: [1M context GA announcement](https://claude.com/blog/1m-context-ga)
+
+Short version: the big March 2026 Claude changes were memory for free users, cross-app Excel/PowerPoint workflows, inline interactive visuals, persistent cross-device Cowork threads, computer use, and interactive mobile apps.
+
+ASSUMPTIONS:
+
+- “Claude AI” means the public Claude product experience, not every Claude Code-only or API-only changelog item.
+- “March 2026” means publicly announced features released through March 29, 2026.
+- I excluded temporary promotions and pricing-only changes as non-feature items.
+tokens used
+90,754
+
