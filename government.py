@@ -49,7 +49,8 @@ NETWORK_ERROR_SIGNALS = ("network error", "connection refused", "connection rese
                          "unable to connect", "network is unreachable",
                          "no internet", "getaddrinfo")
 
-MAX_RECOVERY_RETRIES = 3       # max retries for network/rate-limit recovery
+MAX_RECOVERY_RETRIES = 3       # max retries for network recovery
+RATE_LIMIT_AUTO_RETRY_SECONDS = 3600  # auto-retry once per hour while waiting on rate limits
 
 # Terminal colors
 C_RESET   = "\033[0m"
@@ -1433,29 +1434,51 @@ class Government:
         self.logger.master("SYSTEM", f"Internet restored after {wait}s")
         return True
 
-    def _wait_for_rate_limit(self, retry_info: str) -> bool:
-        """Pause until user presses R to retry or Q to quit. Returns False if user quits."""
+    def _wait_for_rate_limit(self, retry_info: str) -> str:
+        """Wait for manual retry or hourly auto-retry. Returns an action string."""
         _flush_input()
+        auto_minutes = max(1, RATE_LIMIT_AUTO_RETRY_SECONDS // 60)
         self.ui.status(
-            f"RATE LIMITED — press [R] to retry, [Q] to quit.{retry_info}", C_YELLOW)
+            f"RATE LIMITED — press [R] to retry now, [Q] to quit. "
+            f"Auto-retry in {auto_minutes}m.{retry_info}", C_YELLOW)
         self.logger.master("SYSTEM", f"Rate limit pause.{retry_info}")
         old_term = _enter_cbreak()
+        start = time.monotonic()
+        deadline = start + RATE_LIMIT_AUTO_RETRY_SECONDS
+        last_status_bucket = -1
         try:
-            wait = 0
             while True:
                 if _kbhit():
                     ch = _read_key()
+                    waited = int(time.monotonic() - start)
                     if ch == 'r':
-                        return True
+                        self.logger.master(
+                            "SYSTEM",
+                            f"Rate limit manual retry after {waited}s.{retry_info}")
+                        return "manual_retry"
                     elif ch == 'q':
                         self._interrupt_requested = True
                         self.ui.status("Quit requested.", C_RED)
-                        return False
+                        self.logger.master(
+                            "SYSTEM",
+                            f"Rate limit quit after {waited}s.{retry_info}")
+                        return "quit"
+                now = time.monotonic()
+                if now >= deadline:
+                    waited = int(now - start)
+                    self.logger.master(
+                        "SYSTEM",
+                        f"Rate limit auto-retry after {waited}s.{retry_info}")
+                    return "auto_retry"
                 time.sleep(1)
-                wait += 1
-                if wait % 30 == 0:
+                waited = int(time.monotonic() - start)
+                remaining = max(0, int(deadline - time.monotonic()))
+                status_bucket = waited // 30
+                if waited >= 30 and status_bucket != last_status_bucket:
+                    last_status_bucket = status_bucket
                     self.ui.status(
-                        f"Rate limited ({wait}s)... [R=retry, Q=quit]", C_DIM)
+                        f"Rate limited ({waited}s)... auto-retry in "
+                        f"{remaining}s [R=retry now, Q=quit]", C_DIM)
         finally:
             _exit_cbreak(old_term)
 
@@ -1466,15 +1489,17 @@ class Government:
     def _run_with_recovery(self, agent: str, prompt: str, round_label: str,
                            pause_event: threading.Event,
                            ) -> tuple[str, str, int, float, str | None]:
-        """Run codex with automatic retry on network errors and rate limits.
-        Returns (stdout, stderr, rc, duration, new_sid). Max MAX_RECOVERY_RETRIES retries."""
+        """Run codex with recovery.
+        Network retries are capped; rate-limit retries wait until manual or auto retry."""
 
         sid_key = f"{agent}_session_id"
         call_key = f"total_{agent}_calls"
         rnd = self.state.get("current_round", 0)
         total_duration = 0.0
+        attempt = 0
+        network_retries = 0
 
-        for attempt in range(MAX_RECOVERY_RETRIES + 1):  # 0 = initial, 1..3 = retries
+        while True:
             current_sid = self.state.get(sid_key)
 
             if attempt > 0:
@@ -1512,13 +1537,17 @@ class Government:
             if rc == -3 or _is_network_error(stderr, rc):
                 self.logger.master(agent.upper(),
                                    f"NETWORK ERROR (attempt {attempt+1}): {stderr[:300]}")
-                if attempt >= MAX_RECOVERY_RETRIES:
+                if network_retries >= MAX_RECOVERY_RETRIES:
                     self.ui.error(f"Network error persists after {MAX_RECOVERY_RETRIES} retries. Halting.")
                     self._interrupt_requested = True
                     return stdout, stderr, rc, total_duration, new_sid
                 if not self._wait_for_internet():
                     return stdout, stderr, rc, total_duration, new_sid  # user quit
-                self.ui.status(f"Retrying {agent} (attempt {attempt+2})...", C_CYAN)
+                network_retries += 1
+                attempt += 1
+                self.ui.status(
+                    f"Retrying {agent} after network recovery "
+                    f"(attempt {attempt+1})...", C_CYAN)
                 continue
 
             # --- Priority 3: Rate limit ---
@@ -1531,20 +1560,27 @@ class Government:
                 if has_output:
                     # Codex finished its task — output is valid, don't retry
                     return stdout, stderr, 0, total_duration, new_sid
-                if attempt >= MAX_RECOVERY_RETRIES:
-                    self.ui.error(f"Rate limit persists after {MAX_RECOVERY_RETRIES} retries. Halting.")
-                    self._interrupt_requested = True
-                    return stdout, stderr, rc, total_duration, new_sid
-                if not self._wait_for_rate_limit(retry_info):
+
+                wait_started = time.monotonic()
+                wait_action = self._wait_for_rate_limit(retry_info)
+                total_duration += time.monotonic() - wait_started
+
+                if wait_action == "quit":
                     return stdout, stderr, rc, total_duration, new_sid  # user quit
-                self.ui.status(f"Retrying {agent} (attempt {attempt+2})...", C_CYAN)
+
+                attempt += 1
+                if wait_action == "auto_retry":
+                    self.ui.status(
+                        f"Auto-retrying {agent} after rate-limit wait "
+                        f"(attempt {attempt+1})...", C_CYAN)
+                else:
+                    self.ui.status(
+                        f"Retrying {agent} on user request "
+                        f"(attempt {attempt+1})...", C_CYAN)
                 continue
 
             # --- No error — success ---
             return stdout, stderr, rc, total_duration, new_sid
-
-        # Should not reach here, but return last result
-        return stdout, stderr, rc, total_duration, new_sid
 
     # ------------------------------------------------------------------
     # Codex call wrapper with session management

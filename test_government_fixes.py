@@ -635,6 +635,203 @@ def test_fix19_smart_resume_main():
           '"r"' in src and '"q"' in src)
 
 
+def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
+    """Fix 20: rate-limit wait should support manual R and hourly auto-retry."""
+    print(f"\n{C_BOLD}=== Fix 20: Rate-limit wait manual + auto retry ==={C_RESET}")
+
+    import government as gov_mod
+    from government import Government
+
+    class DummyUI:
+        def __init__(self):
+            self.messages = []
+
+        def status(self, msg, color=None):
+            self.messages.append(msg)
+
+    class DummyLogger:
+        def __init__(self):
+            self.entries = []
+
+        def master(self, tag, msg):
+            self.entries.append((tag, msg))
+
+    class DummyGov:
+        def __init__(self):
+            self.ui = DummyUI()
+            self.logger = DummyLogger()
+            self._interrupt_requested = False
+
+    gov = DummyGov()
+    gov._wait_for_rate_limit = Government._wait_for_rate_limit.__get__(gov, DummyGov)
+
+    orig_flush = gov_mod._flush_input
+    orig_enter = gov_mod._enter_cbreak
+    orig_exit = gov_mod._exit_cbreak
+    orig_kbhit = gov_mod._kbhit
+    orig_read = gov_mod._read_key
+    orig_sleep = gov_mod.time.sleep
+    orig_mono = gov_mod.time.monotonic
+
+    try:
+        gov_mod._flush_input = lambda: None
+        gov_mod._enter_cbreak = lambda: None
+        gov_mod._exit_cbreak = lambda old: None
+        gov_mod.time.sleep = lambda secs: None
+
+        # Manual retry path
+        key_hits = iter([True])
+        gov_mod._kbhit = lambda: next(key_hits, False)
+        gov_mod._read_key = lambda: "r"
+        gov_mod.time.monotonic = lambda: 0.0
+
+        action = gov._wait_for_rate_limit(" Retry after: later")
+        check("Manual R returns manual_retry", action == "manual_retry")
+        check("Manual retry keeps interrupt flag clear", gov._interrupt_requested is False)
+        check("Initial status mentions auto-retry",
+              any("Auto-retry in" in msg for msg in gov.ui.messages))
+        check("Manual retry is logged",
+              any("manual retry" in msg.lower() for _, msg in gov.logger.entries))
+
+        # Auto-retry path
+        gov.ui.messages.clear()
+        gov.logger.entries.clear()
+        gov._interrupt_requested = False
+
+        class FakeClock:
+            def __init__(self, step):
+                self.value = 0
+                self.step = step
+
+            def __call__(self):
+                self.value += self.step
+                return float(self.value)
+
+        gov_mod._kbhit = lambda: False
+        gov_mod._read_key = lambda: ""
+        gov_mod.time.monotonic = FakeClock(gov_mod.RATE_LIMIT_AUTO_RETRY_SECONDS)
+
+        action = gov._wait_for_rate_limit("")
+        check("Timer expiry returns auto_retry", action == "auto_retry")
+        check("Auto retry keeps interrupt flag clear", gov._interrupt_requested is False)
+        check("Auto retry is logged",
+              any("auto-retry" in msg.lower() for _, msg in gov.logger.entries))
+    finally:
+        gov_mod._flush_input = orig_flush
+        gov_mod._enter_cbreak = orig_enter
+        gov_mod._exit_cbreak = orig_exit
+        gov_mod._kbhit = orig_kbhit
+        gov_mod._read_key = orig_read
+        gov_mod.time.sleep = orig_sleep
+        gov_mod.time.monotonic = orig_mono
+
+
+def test_fix21_rate_limit_retries_are_not_capped():
+    """Fix 21: rate-limit retries should continue past the old shared retry cap."""
+    print(f"\n{C_BOLD}=== Fix 21: Rate-limit retries are uncapped ==={C_RESET}")
+
+    import inspect
+    import threading
+    import government as gov_mod
+    from government import Government
+
+    src = inspect.getsource(Government._run_with_recovery)
+    check("Dedicated network retry counter exists", "network_retries" in src)
+    check("Old rate-limit halt message removed",
+          "Rate limit persists after" not in src)
+
+    class DummyState:
+        def __init__(self):
+            self.data = {
+                "current_round": 1,
+                "executor_session_id": "sid-1",
+                "total_executor_calls": 0,
+            }
+
+        def get(self, key, default=None):
+            return self.data.get(key, default)
+
+        def set(self, key, value):
+            self.data[key] = value
+
+    class DummyUI:
+        def __init__(self):
+            self.statuses = []
+            self.errors = []
+
+        def status(self, msg, color=None):
+            self.statuses.append(msg)
+
+        def error(self, msg):
+            self.errors.append(msg)
+
+    class DummyLogger:
+        def __init__(self):
+            self.master_logs = []
+            self.agent_logs = []
+
+        def master(self, tag, msg):
+            self.master_logs.append((tag, msg))
+
+        def agent(self, *args):
+            self.agent_logs.append(args)
+
+    class DummyGov:
+        pass
+
+    gov = DummyGov()
+    gov.state = DummyState()
+    gov.ui = DummyUI()
+    gov.logger = DummyLogger()
+    gov.codex_bin = "codex"
+    gov.working_dir = os.getcwd()
+    gov._interrupt_requested = False
+    gov._wait_for_internet = lambda: True
+
+    retry_actions = iter(["auto_retry", "auto_retry", "auto_retry", "manual_retry", "auto_retry"])
+
+    def fake_wait_for_rate_limit(self, retry_info):
+        return next(retry_actions)
+
+    gov._wait_for_rate_limit = fake_wait_for_rate_limit.__get__(gov, DummyGov)
+    gov._run_with_recovery = Government._run_with_recovery.__get__(gov, DummyGov)
+
+    responses = [("", "rate limit exceeded", 1, 0.01, "sid-1")] * 5
+    responses.append(("done", "", 0, 0.02, "sid-1"))
+    run_calls = {"count": 0}
+
+    orig_run_codex = gov_mod.run_codex
+    orig_is_network_error = gov_mod._is_network_error
+    orig_is_rate_limited = gov_mod._is_rate_limited
+
+    try:
+        def fake_run_codex(prompt, codex_bin, session_id, agent_name, ui,
+                           logger, round_label, working_dir, pause_event=None):
+            idx = run_calls["count"]
+            run_calls["count"] += 1
+            return responses[idx]
+
+        gov_mod.run_codex = fake_run_codex
+        gov_mod._is_network_error = lambda stderr, rc: False
+        gov_mod._is_rate_limited = (
+            lambda stderr, rc: ("rate limit" in (stderr or "").lower(), "")
+        )
+
+        stdout, stderr, rc, duration, new_sid = gov._run_with_recovery(
+            "executor", "Do the task", "P1R1", threading.Event())
+
+        check("Rate-limit flow eventually succeeds", rc == 0 and stdout == "done")
+        check("Rate-limit flow retries past old cap", run_calls["count"] == 6)
+        check("Call counter includes every retry",
+              gov.state.get("total_executor_calls") == 6)
+        check("No rate-limit halt error shown",
+              not any("Rate limit persists after" in msg for msg in gov.ui.errors))
+    finally:
+        gov_mod.run_codex = orig_run_codex
+        gov_mod._is_network_error = orig_is_network_error
+        gov_mod._is_rate_limited = orig_is_rate_limited
+
+
 def test_existing_functionality():
     """Verify existing features still work after all fixes."""
     print(f"\n{C_BOLD}=== Existing functionality ==={C_RESET}")
@@ -740,6 +937,8 @@ if __name__ == "__main__":
     test_fix17_resume_mode_skips_prompt()
     test_fix18_phase0_migration()
     test_fix19_smart_resume_main()
+    test_fix20_rate_limit_wait_supports_manual_and_auto_retry()
+    test_fix21_rate_limit_retries_are_not_capped()
     test_existing_functionality()
 
     print(f"\n{C_BOLD}{'=' * 60}")
