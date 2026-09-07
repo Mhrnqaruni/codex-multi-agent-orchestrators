@@ -5610,9 +5610,11 @@ def _run_non_command_verification_check(
             summary_lines.append("read_errors=" + " | ".join(evidence.get("read_errors")[:5]))
         check.stdout_excerpt = _excerpt_output("\n".join(summary_lines))
     elif check.id.endswith(":redaction_sanity"):
-        sample = "OPENAI_API_KEY=sk-phase6SECRET1234567890 password=plain-secret"
+        # Construct a deliberately fictional value; never copy a real key here.
+        synthetic_key = "sk-" + "fictional-redaction-test-" + "0" * 20
+        sample = f"OPENAI_API_KEY={synthetic_key} password=plain-secret"
         redacted = _redact_sensitive_text(sample)
-        if "sk-phase6SECRET1234567890" in redacted or "plain-secret" in redacted:
+        if synthetic_key in redacted or "plain-secret" in redacted:
             check.status = VERIFICATION_STATUS_FAILED
             check.reason += " Redaction helper did not mask the synthetic secret sample."
         else:
