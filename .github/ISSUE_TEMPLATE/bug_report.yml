@@ -1,0 +1,20 @@
+name: Bug report
+description: Report a reproducible non-security defect using synthetic inputs.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not paste private prompts, credentials, session IDs, machine paths, or real target data. Use the private route in SECURITY.md for vulnerabilities."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and platform
+      description: Package version, Python version, OS, and native Codex version if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Steps, expected result, actual result, and minimal fictional example.
+    validations:
+      required: true

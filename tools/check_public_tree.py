@@ -12,10 +12,24 @@ import sys
 
 
 MAX_BYTES = 2 * 1024 * 1024
-FORBIDDEN_PARTS = {"logs", ".government", ".claude", ".codex-orchestrators",
-                   "congress_rounds", "__pycache__", ".venv", "node_modules"}
-FORBIDDEN_NAMES = {"update.md", "session.json", "session_request.md",
-                   "congress_state.json", "congress.lock", "accessTokens.json"}
+FORBIDDEN_PARTS = {
+    "logs",
+    ".government",
+    ".claude",
+    ".codex-orchestrators",
+    "congress_rounds",
+    "__pycache__",
+    ".venv",
+    "node_modules",
+}
+FORBIDDEN_NAMES = {
+    "update.md",
+    "session.json",
+    "session_request.md",
+    "congress_state.json",
+    "congress.lock",
+    "accessTokens.json",
+}
 FORBIDDEN_SUFFIXES = {".bundle", ".pem", ".key", ".p12", ".pfx", ".apk"}
 PATTERNS = {
     "private-key": re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
@@ -30,9 +44,12 @@ def inspect_file(name, data, mode="100644"):
     """Return category names only; never return matched secret values."""
     path = PurePosixPath(name)
     findings = []
-    if (set(path.parts) & FORBIDDEN_PARTS or path.name in FORBIDDEN_NAMES
-            or path.suffix.lower() in FORBIDDEN_SUFFIXES
-            or (path.name.startswith(".env") and path.name != ".env.example")):
+    if (
+        set(path.parts) & FORBIDDEN_PARTS
+        or path.name in FORBIDDEN_NAMES
+        or path.suffix.lower() in FORBIDDEN_SUFFIXES
+        or (path.name.startswith(".env") and path.name != ".env.example")
+    ):
         findings.append("private-artifact-path")
     if mode not in {"100644", "100755"}:
         findings.append("unsupported-file-mode")
