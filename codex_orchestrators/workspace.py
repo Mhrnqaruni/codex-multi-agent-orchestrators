@@ -5,8 +5,59 @@ import os
 from pathlib import Path
 import stat
 import tempfile
+import subprocess
 
 from .policies import PolicyError
+
+
+def prepare_worktree(source: Path, destination: Path, branch: str) -> str:
+    """Create an isolated edit branch, only after a clean source preflight.
+
+    Never stash/reset user work, commit changes, push, or remove a worktree.
+    Calling this operation is explicit authorization to create this one branch.
+    """
+    import re
+    from .policies import child_environment
+
+    if not re.fullmatch(r"orchestrators/[a-z0-9][a-z0-9-]{0,60}", branch):
+        raise PolicyError("Branch must be orchestrators/<lowercase-run-name>")
+    source = source.resolve(strict=True)
+    destination = destination.absolute()
+    if destination.exists() or destination.is_symlink():
+        raise PolicyError("Destination must not exist")
+    if destination.is_relative_to(source):
+        raise PolicyError("Destination must be outside the source checkout")
+
+    def git(*args: str) -> str:
+        result = subprocess.run(
+            [
+                "git",
+                "-c",
+                f"core.hooksPath={os.devnull}",
+                "-c",
+                "core.fsmonitor=false",
+                "-C",
+                str(source),
+                *args,
+            ],
+            env=child_environment(),
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode:
+            raise PolicyError("Git workspace operation failed; no reset or cleanup attempted")
+        return result.stdout.strip()
+
+    if Path(git("rev-parse", "--show-toplevel")).resolve() != source:
+        raise PolicyError("Source must be the repository root")
+    if git("status", "--porcelain=v1", "--untracked-files=all"):
+        raise PolicyError("Source is dirty; preserve changes before preparing a worktree")
+    if any((source / name).exists() for name in (".gitmodules", ".codex", ".gitattributes")):
+        raise PolicyError("Submodules, attributes/filters, or project Codex config require a separate review")
+    base = git("rev-parse", "HEAD")
+    git("worktree", "add", "-b", branch, str(destination), base)
+    return base
 
 
 def fingerprint(root: Path) -> str:
@@ -63,8 +114,9 @@ def write_government_review(root: Path, step: str, phase: int, output: str) -> N
     path.parent.mkdir(exist_ok=True)
     temporary = None
     try:
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
-                                         prefix=".review-", suffix=".tmp", delete=False) as stream:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=path.parent, prefix=".review-", suffix=".tmp", delete=False
+        ) as stream:
             temporary = Path(stream.name)
             stream.write(output)
             stream.flush()

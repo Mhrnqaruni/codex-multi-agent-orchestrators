@@ -16,8 +16,14 @@ trusting working files. Include exact commands/results in the PR.
 
 Document scope, SHAs, plan items, tests, remaining risks, license/dependency
 effects, and revert instructions. Use fictional temporary fixtures. Live Codex
-runs and real-project execution are excluded from normal tests; the engines
-do not yet enforce the proposed safety model.
+runs and real-project execution are excluded from normal tests. Implemented
+controls and remaining safety gaps are described in `docs/READINESS.md`.
+
+Install hashed tooling with `python -m pip install --require-hashes -r
+requirements-dev.txt`. Run Ruff, pytest, the dependency audit, and wheel
+inspection as described in `docs/TESTING.md`. Changes to the CLI adapter require
+protocol and permission tests; changes to path/state code require adversarial
+fixtures. Do not replace a failed gate with a weaker claim or a skipped check.
 
 By submitting contributions, you represent that you may license them under
 this repository's noncommercial license. No copyright assignment or separate

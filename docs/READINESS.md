@@ -1,28 +1,56 @@
-# Implementation status
+# Public-readiness gate
 
-Base: `0b44ea008db47c050889a7d3e9c186cc5480444d`.
-Integration: `integration/public-readiness`.
-First topic: `hardening/remove-private-artifacts`.
+**Decision: keep private. This candidate is substantially hardened, but is not
+approved for public release or unrestricted live execution.** A professional
+README and passing unit tests do not replace the remaining safety gates.
 
-## This change
+## Implemented in the candidate
 
-- Removed 40 real session artifacts and the private incident memo from the
-  topic tree; the offline backup and original private history preserve them.
-- Added ignores and a tested staged-tree publication guard.
-- Replaced unsafe onboarding with inspection-only instructions.
-- Added noncommercial licensing, contribution and security documentation.
+- Private logs/incident memo removed from the tracked tree; original backup retained.
+- One canonical Congress engine with compatibility shims and installable packaging.
+- Shared role policy, filtered environment, native CLI, version preflight and JSONL adapter.
+- Bounded retry/call/output/process controls; Windows/POSIX cleanup tests.
+- Metadata-only diagnostics and scoped explicit metadata purge.
+- Read-only review argv, host-captured Government reviews, candidate-drift rejection.
+- Host project-command execution blocked, without pretending blocked checks passed.
+- Dedicated edit worktrees required; explicit clean-source preparation helper.
+- Real pytest assertions, canonical recovery and security-boundary tests.
+- Pinned/hashed development dependencies; build-tool advisory addressed.
+- Wheel content/license checks, offline demo, CI matrix and contribution templates.
+- Architecture, threat model, privacy, compatibility, usage and testing documentation.
+- Custom noncommercial source-available license with a hiring-evaluation exception.
 
-## Remaining blockers
+## Still required before the owner's public-release decision
 
-- Old history still contains private content and personal author metadata.
-- Engines still have unsafe authority defaults, content logging, and incomplete
-  canonical-engine coverage.
-- Role separation, command/environment policy, bounded retries, process-tree
-  cleanup, packaging, locking, Windows/Linux CI, fake agents, and demo remain.
-- No live-run safety, reviewer write denial, cross-platform pass, or production
-  readiness is claimed here.
-- Custom licensing terms are not lawyer-reviewed.
+| Gate | Remaining work |
+|---|---|
+| History/privacy | Create an approved clean public history from allowlisted files, or separately authorize an all-ref rewrite; inspect PII and public identity; scan the resulting full history |
+| Live authority | In an explicitly authorized isolated synthetic environment, prove Inspector write denial, writer containment, configuration/plugin restrictions, and network limits with the accepted native CLI |
+| State/privacy | Move retained workflow state and scratch artifacts into one access-controlled store; define retention, explicit content consent and migration; test corruption/lock/race cases |
+| Review evidence | Use an immutable candidate snapshot and prove post-review approval invalidation through complete workflows |
+| Verification | Integrate explicit command approval with an external isolated verifier; currently host commands correctly remain blocked |
+| Engine correctness | Complete fake-executable end-to-end Congress/Government/resume/failure characterization; replace remaining source-only checks; further split large methods |
+| Budgets | Persist cross-instance budgets and implement a strict whole-workflow deadline including waits; current budgets prevent new calls, not all interactive idle time |
+| CI/release | Observe exact-SHA Windows/Linux checks; review artifacts/fresh clone; configure owner-approved protections; authorize any tag/release separately |
+| Ownership/license | Confirm all content is publishable; obtain legal review if relying on custom commercial restrictions |
 
-Main and visibility stay unchanged. Follow the remaining topics in the owner's
-plan after review of this PR. Do not publish this branch or its ancestry. Build
-public history separately from reviewed files after all release gates pass.
+## Branch and publication boundaries
+
+The original `main` remains private and unchanged at the reviewed base. Work is
+committed on hardening/refactor branches, never directly on `main`. Local stacked
+topics are not automatically accepted integration changes. Review the cumulative
+PR and exact candidate results before merging to `integration/public-readiness`.
+
+Do not publish these branches: their ancestry contains the original private
+material. No force push, main merge, replacement repository, visibility change,
+package upload, release, or live private-target run is authorized by this file.
+
+## CV wording that is supportable now
+
+> Built a Python research/review and phased-agent orchestration project with
+> durable workflow state; extracted role-scoped CLI execution, bounded recovery,
+> structured event validation, privacy-conscious diagnostics, and deterministic
+> failure tests during a security-hardening program.
+
+Describe it as an alpha/private project. Do not claim production security,
+independent model judgment, fully verified sandboxing, or public availability.

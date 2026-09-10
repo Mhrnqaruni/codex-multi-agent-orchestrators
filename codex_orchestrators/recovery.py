@@ -14,18 +14,36 @@ class Failure(str, Enum):
 def classify_failure(stderr: str, returncode: int) -> Failure:
     lowered = stderr.lower()
     permanent = (
-        "insufficient_quota", "quota exceeded", "billing", "unauthorized",
-        "authentication", "invalid api key", "permission denied", "policy denied",
-        "unsupported", "invalid request", "budget exhausted", "output limit",
-        "candidate changed", "malformed event",
+        "insufficient_quota",
+        "quota exceeded",
+        "billing",
+        "unauthorized",
+        "authentication",
+        "invalid api key",
+        "permission denied",
+        "policy denied",
+        "unsupported",
+        "invalid request",
+        "budget exhausted",
+        "output limit",
+        "candidate changed",
+        "malformed event",
     )
     if any(marker in lowered for marker in permanent):
         return Failure.TERMINAL
     if returncode == 0:
         return Failure.SUCCESS
     transient = (
-        "rate limit", "rate_limit", "429", "connection reset", "connection refused",
-        "network", "timed out", "timeout", "temporarily unavailable", "503",
+        "rate limit",
+        "rate_limit",
+        "429",
+        "connection reset",
+        "connection refused",
+        "network",
+        "timed out",
+        "timeout",
+        "temporarily unavailable",
+        "503",
     )
     if any(marker in lowered for marker in transient):
         return Failure.TRANSIENT

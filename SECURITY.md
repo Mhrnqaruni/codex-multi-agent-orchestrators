@@ -1,16 +1,19 @@
-# Security status
+# Security policy
 
-This experimental repository is undergoing private hardening. No released
-version is supported for production or untrusted-project execution. Engines
-still have approval/sandbox bypass defaults and content logging. Removing
-tracked logs does not repair runtime behavior.
+This alpha is undergoing private hardening. No version is supported for
+production or untrusted-project use. Permission bypass defaults have been
+removed, but the [threat model](docs/THREAT_MODEL.md) and
+[release gates](docs/READINESS.md) document important remaining limitations.
 
-Use the existing private communication channel with the repository owner for
-security reports. If GitHub private vulnerability reporting is enabled, use
-Security > Report a vulnerability. Otherwise request a private reporting route
-without posting exploit details. Never post credentials, session IDs, raw
-prompts, personal paths, or private target files in public issues or PRs.
+Use the established private channel with the repository owner to report a
+vulnerability. If GitHub private vulnerability reporting is enabled, use
+**Security → Report a vulnerability**. Otherwise request a private reporting
+route without posting exploit details publicly. No response-time SLA is offered.
 
-Publication requires role enforcement, command and environment policies,
-bounded retries/process cleanup, privacy defaults, and a fresh history audit.
-The lightweight tracked-tree guard is one layer, not a security certification.
+Provide affected version/commit, synthetic reproduction, impact, and a proposed
+mitigation if known. Do not send live credentials, private source, raw sessions,
+personal paths, or real prompts in public issues or pull requests.
+
+Never use the full private Git history as a public security artifact. The
+publication guard and secret scanner are defense-in-depth checks, not proof that
+all PII, secrets, or exploitable behaviors have been eliminated.

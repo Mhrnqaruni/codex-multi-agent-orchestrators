@@ -43,14 +43,22 @@ class WindowsJob:
             ]
 
         class IOCounters(ctypes.Structure):
-            _fields_ = [(name, ctypes.c_uint64) for name in (
-                "ReadOperationCount", "WriteOperationCount", "OtherOperationCount",
-                "ReadTransferCount", "WriteTransferCount", "OtherTransferCount",
-            )]
+            _fields_ = [
+                (name, ctypes.c_uint64)
+                for name in (
+                    "ReadOperationCount",
+                    "WriteOperationCount",
+                    "OtherOperationCount",
+                    "ReadTransferCount",
+                    "WriteTransferCount",
+                    "OtherTransferCount",
+                )
+            ]
 
         class ExtendedLimits(ctypes.Structure):
             _fields_ = [
-                ("BasicLimitInformation", BasicLimits), ("IoInfo", IOCounters),
+                ("BasicLimitInformation", BasicLimits),
+                ("IoInfo", IOCounters),
                 ("ProcessMemoryLimit", ctypes.c_size_t),
                 ("JobMemoryLimit", ctypes.c_size_t),
                 ("PeakProcessMemoryUsed", ctypes.c_size_t),
@@ -60,7 +68,12 @@ class WindowsJob:
         kernel = ctypes.WinDLL("kernel32", use_last_error=True)
         kernel.CreateJobObjectW.argtypes = [ctypes.c_void_p, wintypes.LPCWSTR]
         kernel.CreateJobObjectW.restype = wintypes.HANDLE
-        kernel.SetInformationJobObject.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD]
+        kernel.SetInformationJobObject.argtypes = [
+            wintypes.HANDLE,
+            ctypes.c_int,
+            ctypes.c_void_p,
+            wintypes.DWORD,
+        ]
         kernel.SetInformationJobObject.restype = wintypes.BOOL
         kernel.AssignProcessToJobObject.argtypes = [wintypes.HANDLE, wintypes.HANDLE]
         kernel.AssignProcessToJobObject.restype = wintypes.BOOL
@@ -86,8 +99,13 @@ class WindowsJob:
 
 
 def run_process(
-    command: list[str], *, cwd: Path, env: dict[str, str], input_text: str = "",
-    timeout: float = 600, max_output_bytes: int = 2 * 1024 * 1024,
+    command: list[str],
+    *,
+    cwd: Path,
+    env: dict[str, str],
+    input_text: str = "",
+    timeout: float = 600,
+    max_output_bytes: int = 2 * 1024 * 1024,
     cancel: threading.Event | None = None,
 ) -> ProcessResult:
     """No shell; bounded input, output, wall time, and daemon pipe readers."""
@@ -98,8 +116,12 @@ def run_process(
         raise ValueError("Prompt exceeds 1 MiB limit")
     started = time.monotonic()
     proc = subprocess.Popen(
-        command, cwd=cwd, env=env, stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        command,
+        cwd=cwd,
+        env=env,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         start_new_session=os.name != "nt",
         creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
     )

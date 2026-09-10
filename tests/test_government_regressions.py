@@ -13,15 +13,25 @@ import shutil
 sys.path.insert(0, os.path.dirname(__file__))
 
 from government import (
-    GovernmentState, verify_file_created, verify_has_verdict,
-    _parse_session_id, _strip_ansi, build_context_anchor,
-    build_executor_prompt, build_inspector_prompt,
+    GovernmentState,
+    verify_file_created,
+    verify_has_verdict,
+    _parse_session_id,
+    _strip_ansi,
+    build_context_anchor,
+    build_executor_prompt,
+    build_inspector_prompt,
     generate_project_status,
-    C_RESET, C_GREEN, C_RED, C_YELLOW, C_BOLD,
+    C_RESET,
+    C_GREEN,
+    C_RED,
+    C_YELLOW,
+    C_BOLD,
 )
 
 passed = 0
 failed = 0
+
 
 def check(name, condition, detail=""):
     assert condition, f"{name}: {detail}"
@@ -60,13 +70,24 @@ def test_fix1_first_run_no_crash():
         # Write a valid .tmp backup
         temp = state.state_path + ".tmp"
         with open(temp, "w") as f:
-            json.dump({"source_file": "test.md", "current_step": "exec",
-                        "current_phase": 2, "phases_completed": [1],
-                        "executor_session_id": None, "inspector_session_id": None,
-                        "current_round": 0, "total_executor_calls": 0,
-                        "total_inspector_calls": 0, "phase_summaries": {},
-                        "user_instructions": "", "working_dir": "",
-                        "created_at": "2025-01-01"}, f)
+            json.dump(
+                {
+                    "source_file": "test.md",
+                    "current_step": "exec",
+                    "current_phase": 2,
+                    "phases_completed": [1],
+                    "executor_session_id": None,
+                    "inspector_session_id": None,
+                    "current_round": 0,
+                    "total_executor_calls": 0,
+                    "total_inspector_calls": 0,
+                    "phase_summaries": {},
+                    "user_instructions": "",
+                    "working_dir": "",
+                    "created_at": "2025-01-01",
+                },
+                f,
+            )
 
         state2 = GovernmentState(gov_dir)
         check("Corrupt recovery from .tmp", state2.get("current_step") == "exec")
@@ -91,27 +112,23 @@ def test_fix2_skip_returns_skipped():
 
     # Check _do_master_plan source for 'return "skipped"'
     src_mp = inspect.getsource(Government._do_master_plan)
-    check("_do_master_plan has 'return \"skipped\"'",
-          'return "skipped"' in src_mp)
-    check("_do_master_plan no longer has skip->True",
-          'elif choice == "s":\n                    return True' not in src_mp)
+    check("_do_master_plan has 'return \"skipped\"'", 'return "skipped"' in src_mp)
+    check(
+        "_do_master_plan no longer has skip->True",
+        'elif choice == "s":\n                    return True' not in src_mp,
+    )
 
     src_pp = inspect.getsource(Government._do_phase_plan)
-    check("_do_phase_plan has 'return \"skipped\"'",
-          'return "skipped"' in src_pp)
+    check("_do_phase_plan has 'return \"skipped\"'", 'return "skipped"' in src_pp)
 
     src_pe = inspect.getsource(Government._do_phase_execution)
-    check("_do_phase_execution has 'return \"skipped\"'",
-          'return "skipped"' in src_pe)
+    check("_do_phase_execution has 'return \"skipped\"'", 'return "skipped"' in src_pe)
 
     # Check that callers handle "skipped" distinctly
     src_run = inspect.getsource(Government.run)
-    check("run() checks mp_result == 'skipped'",
-          'mp_result == "skipped"' in src_run)
-    check("run() checks plan_result == 'skipped'",
-          'plan_result == "skipped"' in src_run)
-    check("run() checks exec_result == 'skipped'",
-          'exec_result == "skipped"' in src_run)
+    check("run() checks mp_result == 'skipped'", 'mp_result == "skipped"' in src_run)
+    check("run() checks plan_result == 'skipped'", 'plan_result == "skipped"' in src_run)
+    check("run() checks exec_result == 'skipped'", 'exec_result == "skipped"' in src_run)
 
     # Verify 'skipped' is truthy (so 'if not result' still works for False)
     check("'skipped' is truthy", bool("skipped") is True)
@@ -126,16 +143,11 @@ def test_fix3_session_error_no_rc1():
     from government import Government
 
     src = inspect.getsource(Government._call_agent)
-    check("No 'or rc == 1' in is_session_error",
-          "or rc == 1" not in src)
-    check("Checks 'session not found' in stderr",
-          '"session not found" in stderr_lower' in src)
-    check("Checks 'invalid session' in stderr",
-          '"invalid session" in stderr_lower' in src)
-    check("Checks 'unknown session' in stderr",
-          '"unknown session" in stderr_lower' in src)
-    check("Checks 'no such session' in stderr",
-          '"no such session" in stderr_lower' in src)
+    check("No 'or rc == 1' in is_session_error", "or rc == 1" not in src)
+    check("Checks 'session not found' in stderr", '"session not found" in stderr_lower' in src)
+    check("Checks 'invalid session' in stderr", '"invalid session" in stderr_lower' in src)
+    check("Checks 'unknown session' in stderr", '"unknown session" in stderr_lower' in src)
+    check("Checks 'no such session' in stderr", '"no such session" in stderr_lower' in src)
 
     # Simulate: rc=1, no stdout, stderr="rate limit exceeded" — should NOT be session error
     # (We test the logic directly)
@@ -143,20 +155,32 @@ def test_fix3_session_error_no_rc1():
     rc = 1
     stdout = ""
     stderr_lower = "rate limit exceeded"
-    is_session_error = (session_id and rc != 0 and not stdout.strip()
-                        and ("session not found" in stderr_lower
-                             or "invalid session" in stderr_lower
-                             or "unknown session" in stderr_lower
-                             or "no such session" in stderr_lower))
+    is_session_error = (
+        session_id
+        and rc != 0
+        and not stdout.strip()
+        and (
+            "session not found" in stderr_lower
+            or "invalid session" in stderr_lower
+            or "unknown session" in stderr_lower
+            or "no such session" in stderr_lower
+        )
+    )
     check("Rate limit (rc=1) NOT detected as session error", not is_session_error)
 
     # But actual session error should still be caught
     stderr_lower2 = "session not found: abc-123"
-    is_session_error2 = (session_id and rc != 0 and not stdout.strip()
-                         and ("session not found" in stderr_lower2
-                              or "invalid session" in stderr_lower2
-                              or "unknown session" in stderr_lower2
-                              or "no such session" in stderr_lower2))
+    is_session_error2 = (
+        session_id
+        and rc != 0
+        and not stdout.strip()
+        and (
+            "session not found" in stderr_lower2
+            or "invalid session" in stderr_lower2
+            or "unknown session" in stderr_lower2
+            or "no such session" in stderr_lower2
+        )
+    )
     check("Session-not-found IS detected as session error", is_session_error2)
 
 
@@ -170,16 +194,14 @@ def test_fix4_resume_logic():
     src = inspect.getsource(Government.run)
 
     # Check that resume uses saved_step to skip master plan
-    check("Resume checks past_master_plan",
-          "past_master_plan" in src)
-    check("past_master_plan uses saved_step",
-          'saved_step not in ("init", "master_plan")' in src)
+    check("Resume checks past_master_plan", "past_master_plan" in src)
+    check("past_master_plan uses saved_step", 'saved_step not in ("init", "master_plan")' in src)
 
     # Check mid-phase resume skips planning
-    check("Mid-phase resume: skip_plan logic exists",
-          "skip_plan" in src)
-    check("skip_plan checks saved_step for exec",
-          'saved_step in ("exec", "exec_review", "checkpoint")' in src)
+    check("Mid-phase resume: skip_plan logic exists", "skip_plan" in src)
+    check(
+        "skip_plan checks saved_step for exec", 'saved_step in ("exec", "exec_review", "checkpoint")' in src
+    )
 
     # Test the actual condition:
     # Scenario: resume after master plan done, phase 1 plan in progress, no completed phases
@@ -189,15 +211,13 @@ def test_fix4_resume_logic():
     can_resume = True
     past_master_plan = saved_step not in ("init", "master_plan")
     should_skip = can_resume and master_plan_exists and (completed_phases or past_master_plan)
-    check("Resume at 'plan' step with no completed phases: skips master plan",
-          should_skip is True)
+    check("Resume at 'plan' step with no completed phases: skips master plan", should_skip is True)
 
     # Scenario: resume at master_plan step — should NOT skip
     saved_step2 = "master_plan"
     past_master_plan2 = saved_step2 not in ("init", "master_plan")
     should_skip2 = can_resume and master_plan_exists and (completed_phases or past_master_plan2)
-    check("Resume at 'master_plan' step: does NOT skip master plan",
-          should_skip2 is False)
+    check("Resume at 'master_plan' step: does NOT skip master plan", should_skip2 is False)
 
 
 def test_fix5_source_file_always_updated():
@@ -210,14 +230,14 @@ def test_fix5_source_file_always_updated():
     src = inspect.getsource(Government.__init__)
 
     # Should NOT have the old "if not self.state.get('source_file')" guard
-    check("No conditional source_file write",
-          'if not self.state.get("source_file")' not in src)
+    check("No conditional source_file write", 'if not self.state.get("source_file")' not in src)
     # Should always call state.update with source_file
-    check("Always updates source_file in state",
-          "self.state.update(" in src and "source_file=self.source_file" in src)
+    check(
+        "Always updates source_file in state",
+        "self.state.update(" in src and "source_file=self.source_file" in src,
+    )
     # Should warn on change
-    check("Warns on source file change",
-          "Source file changed" in src)
+    check("Warns on source file change", "Source file changed" in src)
 
 
 def test_fix6_eoferror_handling():
@@ -229,25 +249,22 @@ def test_fix6_eoferror_handling():
 
     # Check soft_stop_prompt
     src_ssp = inspect.getsource(TerminalUI.soft_stop_prompt)
-    check("soft_stop_prompt handles EOFError",
-          "EOFError" in src_ssp)
+    check("soft_stop_prompt handles EOFError", "EOFError" in src_ssp)
 
     # Check user_checkpoint
     src_uc = inspect.getsource(TerminalUI.user_checkpoint)
-    check("user_checkpoint handles EOFError",
-          "EOFError" in src_uc)
+    check("user_checkpoint handles EOFError", "EOFError" in src_uc)
 
     # Check run() resume prompt
     src_run = inspect.getsource(Government.run)
-    check("run() resume prompt handles EOFError",
-          "EOFError" in src_run)
+    check("run() resume prompt handles EOFError", "EOFError" in src_run)
 
     # Check main() interactive setup
     from government import main
+
     src_main = inspect.getsource(main)
     eof_count = src_main.count("EOFError")
-    check(f"main() has multiple EOFError handlers (found {eof_count})",
-          eof_count >= 3)
+    check(f"main() has multiple EOFError handlers (found {eof_count})", eof_count >= 3)
 
 
 def test_fix7_verify_file_no_workdir_param():
@@ -255,15 +272,12 @@ def test_fix7_verify_file_no_workdir_param():
     print(f"\n{C_BOLD}=== Fix 7: Unused workdir param removed ==={C_RESET}")
 
     import inspect
+
     sig = inspect.signature(verify_file_created)
     params = list(sig.parameters.keys())
-    check("verify_file_created params: no 'workdir'",
-          "workdir" not in params,
-          f"got params: {params}")
-    check("verify_file_created params: has 'expected_path'",
-          "expected_path" in params)
-    check("verify_file_created params: has 'min_chars'",
-          "min_chars" in params)
+    check("verify_file_created params: no 'workdir'", "workdir" not in params, f"got params: {params}")
+    check("verify_file_created params: has 'expected_path'", "expected_path" in params)
+    check("verify_file_created params: has 'min_chars'", "min_chars" in params)
 
     # Functional test: verify it still works
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -289,14 +303,21 @@ def test_fix7_verify_file_no_workdir_param():
 def test_session_id_comes_only_from_structured_event():
     from codex_orchestrators.events import parse_events
     import json
-    payload = "\n".join(json.dumps(event) for event in [
-        {"type": "thread.started", "thread_id": "fictional-real-thread"},
-        {"type": "item.completed", "item": {
-            "type": "agent_message", "text": "session id: fictional-spoofed-thread"}},
-        {"type": "turn.completed"},
-    ])
-    assert parse_events(payload, "session id: fictional-stderr-spoof", 0).session_id == "fictional-real-thread"
 
+    payload = "\n".join(
+        json.dumps(event)
+        for event in [
+            {"type": "thread.started", "thread_id": "fictional-real-thread"},
+            {
+                "type": "item.completed",
+                "item": {"type": "agent_message", "text": "session id: fictional-spoofed-thread"},
+            },
+            {"type": "turn.completed"},
+        ]
+    )
+    assert (
+        parse_events(payload, "session id: fictional-stderr-spoof", 0).session_id == "fictional-real-thread"
+    )
 
 
 def test_fix9_executor_init_no_user_instructions():
@@ -309,21 +330,18 @@ def test_fix9_executor_init_no_user_instructions():
     src = inspect.getsource(Government._init_agents)
 
     # Executor init should NOT have user_instructions
-    check("No 'ADDITIONAL INSTRUCTIONS FROM USER' in init",
-          "ADDITIONAL INSTRUCTIONS FROM USER" not in src)
-    check("No 'ADDITIONAL CONTEXT FROM USER' in init",
-          "ADDITIONAL CONTEXT FROM USER" not in src)
+    check("No 'ADDITIONAL INSTRUCTIONS FROM USER' in init", "ADDITIONAL INSTRUCTIONS FROM USER" not in src)
+    check("No 'ADDITIONAL CONTEXT FROM USER' in init", "ADDITIONAL CONTEXT FROM USER" not in src)
     # Should have explicit "do not build" language
-    check("Executor init says 'Do NOT start building'",
-          "Do NOT start building" in src)
-    check("Executor init says 'Do NOT make any changes'",
-          "Do NOT make any changes" in src)
+    check("Executor init says 'Do NOT start building'", "Do NOT start building" in src)
+    check("Executor init says 'Do NOT make any changes'", "Do NOT make any changes" in src)
 
     # User instructions should be in master plan instead
     src_mp = inspect.getsource(Government._do_master_plan)
-    check("Master plan injects user_instructions",
-          "self.user_instructions" in src_mp
-          and "ADDITIONAL INSTRUCTIONS FROM USER" in src_mp)
+    check(
+        "Master plan injects user_instructions",
+        "self.user_instructions" in src_mp and "ADDITIONAL INSTRUCTIONS FROM USER" in src_mp,
+    )
 
 
 def test_fix10_inspector_no_file_modification():
@@ -333,27 +351,28 @@ def test_fix10_inspector_no_file_modification():
     from government import INSPECTOR_SYSTEM
 
     # Check INSPECTOR_SYSTEM has the new rule
-    check("INSPECTOR_SYSTEM has 'NEVER create, modify, write, or delete'",
-          "NEVER create, modify, write, or delete" in INSPECTOR_SYSTEM)
-    check("INSPECTOR_SYSTEM has 'READ-ONLY reviewer'",
-          "READ-ONLY reviewer" in INSPECTOR_SYSTEM)
-    check("INSPECTOR_SYSTEM has YOUR LIMITATIONS section",
-          "YOUR LIMITATIONS" in INSPECTOR_SYSTEM)
-    check("INSPECTOR_SYSTEM has 'MUST NOT create, modify'",
-          "MUST NOT create, modify" in INSPECTOR_SYSTEM)
+    check(
+        "INSPECTOR_SYSTEM has 'NEVER create, modify, write, or delete'",
+        "NEVER create, modify, write, or delete" in INSPECTOR_SYSTEM,
+    )
+    check("INSPECTOR_SYSTEM has 'READ-ONLY reviewer'", "READ-ONLY reviewer" in INSPECTOR_SYSTEM)
+    check("INSPECTOR_SYSTEM has YOUR LIMITATIONS section", "YOUR LIMITATIONS" in INSPECTOR_SYSTEM)
+    check("INSPECTOR_SYSTEM has 'MUST NOT create, modify'", "MUST NOT create, modify" in INSPECTOR_SYSTEM)
 
     # Check inspector init prompt
     import inspect
     from government import Government
+
     src = inspect.getsource(Government._init_agents)
 
-    check("Inspector init says 'Do NOT create, modify, or delete'",
-          "Do NOT create, modify, or delete" in src)
-    check("Inspector init says 'READ-ONLY reviewer'",
-          "READ-ONLY reviewer" in src)
-    check("Inspector init has no user_instructions",
-          "self.user_instructions" not in src.split("# Inspector init")[1]
-          if "# Inspector init" in src else True)
+    check("Inspector init says 'Do NOT create, modify, or delete'", "Do NOT create, modify, or delete" in src)
+    check("Inspector init says 'READ-ONLY reviewer'", "READ-ONLY reviewer" in src)
+    check(
+        "Inspector init has no user_instructions",
+        "self.user_instructions" not in src.split("# Inspector init")[1]
+        if "# Inspector init" in src
+        else True,
+    )
 
 
 def test_fix11_fallback_no_user_instructions_for_inspector():
@@ -366,8 +385,10 @@ def test_fix11_fallback_no_user_instructions_for_inspector():
     src = inspect.getsource(Government._call_agent)
 
     # The fallback block should only include instructions for executor
-    check("Fallback checks agent == 'executor' before injecting instructions",
-          'agent == "executor"' in src and "instructions_block" in src)
+    check(
+        "Fallback checks agent == 'executor' before injecting instructions",
+        'agent == "executor"' in src and "instructions_block" in src,
+    )
 
     # Should NOT have bare self.user_instructions in the init_msg
     # Find the fallback section (after "Re-send system prompt")
@@ -375,10 +396,11 @@ def test_fix11_fallback_no_user_instructions_for_inspector():
     if fallback_idx >= 0:
         fallback_section = src[fallback_idx:]
         # Old bug: f"{self.user_instructions}\n\n" directly in init_msg
-        check("No bare user_instructions in fallback init_msg",
-              'f"{self.user_instructions}\\n\\n"' not in fallback_section)
-        check("Has USER INSTRUCTIONS label for executor only",
-              "USER INSTRUCTIONS" in fallback_section)
+        check(
+            "No bare user_instructions in fallback init_msg",
+            'f"{self.user_instructions}\\n\\n"' not in fallback_section,
+        )
+        check("Has USER INSTRUCTIONS label for executor only", "USER INSTRUCTIONS" in fallback_section)
     else:
         check("Fallback section found", False, "Could not find fallback section")
 
@@ -397,12 +419,16 @@ def test_fix12_fallback_increments_call_count():
     recovery_count = recovery_src.count(increment_line)
     call_count = call_src.count(increment_line)
 
-    check("Call counter increment exists in _run_with_recovery",
-          recovery_count == 1,
-          f"found {recovery_count} increments in _run_with_recovery, expected 1")
-    check("_call_agent does not duplicate the increment",
-          call_count == 0,
-          f"found {call_count} increments in _call_agent, expected 0")
+    check(
+        "Call counter increment exists in _run_with_recovery",
+        recovery_count == 1,
+        f"found {recovery_count} increments in _run_with_recovery, expected 1",
+    )
+    check(
+        "_call_agent does not duplicate the increment",
+        call_count == 0,
+        f"found {call_count} increments in _call_agent, expected 0",
+    )
 
 
 def test_fix13_interrupt_after_phase_summary():
@@ -421,10 +447,8 @@ def test_fix13_interrupt_after_phase_summary():
 
     if summary_idx >= 0 and completed_idx >= 0:
         between = src[summary_idx:completed_idx]
-        check("Interrupt check exists between summary and completion",
-              "_interrupt_requested" in between)
-        check("Returns on interrupt (doesn't mark phase complete)",
-              "return" in between)
+        check("Interrupt check exists between summary and completion", "_interrupt_requested" in between)
+        check("Returns on interrupt (doesn't mark phase complete)", "return" in between)
     else:
         check("Found both summary and completion markers", False)
 
@@ -452,14 +476,14 @@ def test_fix14_count_phases_supports_phase_0():
         class MockGov:
             def __init__(self, wd):
                 self.working_dir = wd
+
         mg = MockGov(tmpdir)
         mg._count_phases = Government._count_phases.__get__(mg, type(mg))
 
         # Test 1: phases 0-6
         mp = os.path.join(tmpdir, "master_plan.md")
         with open(mp, "w") as f:
-            f.write("## Phase 0: Foundation\n## Phase 1: Auth\n"
-                    "## Phase 2: Billing\n## Phase 6: Security\n")
+            f.write("## Phase 0: Foundation\n## Phase 1: Auth\n## Phase 2: Billing\n## Phase 6: Security\n")
         result = mg._count_phases()
         check("Phases 0-6: start=0", result is not None and result[0] == 0)
         check("Phases 0-6: end=6", result is not None and result[1] == 6)
@@ -494,14 +518,10 @@ def test_fix15_prev_ref_supports_phase_0():
     plan_src = inspect.getsource(Government._do_phase_plan)
     exec_src = inspect.getsource(Government._do_phase_execution)
 
-    check("_do_phase_plan uses 'phase_num > 0'",
-          "phase_num > 0" in plan_src)
-    check("_do_phase_plan does NOT use 'phase_num > 1'",
-          "phase_num > 1" not in plan_src)
-    check("_do_phase_execution uses 'phase_num > 0'",
-          "phase_num > 0" in exec_src)
-    check("_do_phase_execution does NOT use 'phase_num > 1'",
-          "phase_num > 1" not in exec_src)
+    check("_do_phase_plan uses 'phase_num > 0'", "phase_num > 0" in plan_src)
+    check("_do_phase_plan does NOT use 'phase_num > 1'", "phase_num > 1" not in plan_src)
+    check("_do_phase_execution uses 'phase_num > 0'", "phase_num > 0" in exec_src)
+    check("_do_phase_execution does NOT use 'phase_num > 1'", "phase_num > 1" not in exec_src)
 
 
 def test_fix16_auto_continue_in_checkpoint():
@@ -513,8 +533,7 @@ def test_fix16_auto_continue_in_checkpoint():
 
     sig = inspect.signature(TerminalUI.user_checkpoint)
     params = list(sig.parameters.keys())
-    check("user_checkpoint has 'auto_timeout' param",
-          "auto_timeout" in params)
+    check("user_checkpoint has 'auto_timeout' param", "auto_timeout" in params)
 
     src = inspect.getsource(TerminalUI.user_checkpoint)
     check("Has auto_timeout countdown logic", "auto_timeout > 0" in src)
@@ -540,8 +559,7 @@ def test_fix17_resume_mode_skips_prompt():
 
     run_src = inspect.getsource(Government.run)
     check("run() checks _resume_mode", "_resume_mode" in run_src)
-    check("Forces can_resume when _resume_mode",
-          "can_resume = True" in run_src)
+    check("Forces can_resume when _resume_mode", "can_resume = True" in run_src)
 
 
 def test_fix18_phase0_migration():
@@ -552,12 +570,9 @@ def test_fix18_phase0_migration():
     from government import Government
 
     run_src = inspect.getsource(Government.run)
-    check("Has Phase 0 migration logic",
-          "0 not in completed_phases" in run_src)
-    check("Auto-appends 0 to completed_phases",
-          "completed_phases.append(0)" in run_src)
-    check("Checks start_phase == 0",
-          "start_phase == 0" in run_src)
+    check("Has Phase 0 migration logic", "0 not in completed_phases" in run_src)
+    check("Auto-appends 0 to completed_phases", "completed_phases.append(0)" in run_src)
+    check("Checks start_phase == 0", "start_phase == 0" in run_src)
 
 
 def test_fix19_smart_resume_main():
@@ -568,18 +583,12 @@ def test_fix19_smart_resume_main():
     from government import main
 
     src = inspect.getsource(main)
-    check("Checks for state.json in workdir",
-          "state.json" in src or "state_path" in src)
-    check("Loads saved state for resume display",
-          "saved_source" in src or "saved.get" in src)
-    check("Supports resume_mode flag",
-          "resume_mode = True" in src)
-    check("Supports --auto-continue CLI arg",
-          "--auto-continue" in src)
-    check("Supports positional workdir arg",
-          "os.path.isdir(arg)" in src)
-    check("Shows r/n/q choices",
-          '"r"' in src and '"q"' in src)
+    check("Checks for state.json in workdir", "state.json" in src or "state_path" in src)
+    check("Loads saved state for resume display", "saved_source" in src or "saved.get" in src)
+    check("Supports resume_mode flag", "resume_mode = True" in src)
+    check("Supports --auto-continue CLI arg", "--auto-continue" in src)
+    check("Supports positional workdir arg", "os.path.isdir(arg)" in src)
+    check("Shows r/n/q choices", '"r"' in src and '"q"' in src)
 
 
 def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
@@ -635,10 +644,8 @@ def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
         action = gov._wait_for_rate_limit(" Retry after: later")
         check("Manual R returns manual_retry", action == "manual_retry")
         check("Manual retry keeps interrupt flag clear", gov._interrupt_requested is False)
-        check("Initial status mentions auto-retry",
-              any("Auto-retry in" in msg for msg in gov.ui.messages))
-        check("Manual retry is logged",
-              any("manual retry" in msg.lower() for _, msg in gov.logger.entries))
+        check("Initial status mentions auto-retry", any("Auto-retry in" in msg for msg in gov.ui.messages))
+        check("Manual retry is logged", any("manual retry" in msg.lower() for _, msg in gov.logger.entries))
 
         # Auto-retry path
         gov.ui.messages.clear()
@@ -661,8 +668,7 @@ def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
         action = gov._wait_for_rate_limit("")
         check("Timer expiry returns auto_retry", action == "auto_retry")
         check("Auto retry keeps interrupt flag clear", gov._interrupt_requested is False)
-        check("Auto retry is logged",
-              any("auto-retry" in msg.lower() for _, msg in gov.logger.entries))
+        check("Auto retry is logged", any("auto-retry" in msg.lower() for _, msg in gov.logger.entries))
     finally:
         gov_mod._flush_input = orig_flush
         gov_mod._enter_cbreak = orig_enter
@@ -674,7 +680,7 @@ def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
 
 
 def test_rate_limit_retries_stop_at_budget():
-    """Fix 21: rate-limit retries should continue past the old shared retry cap."""
+    """Repeated rate limits must stop at the explicit attempt ceiling."""
     print(f"\n{C_BOLD}=== Fix 21: Rate-limit retries are uncapped ==={C_RESET}")
 
     import inspect
@@ -684,8 +690,7 @@ def test_rate_limit_retries_stop_at_budget():
 
     src = inspect.getsource(Government._run_with_recovery)
     check("Dedicated network retry counter exists", "network_retries" in src)
-    check("Old rate-limit halt message removed",
-          "Rate limit persists after" not in src)
+    check("Old rate-limit halt message removed", "Rate limit persists after" not in src)
 
     class DummyState:
         def __init__(self):
@@ -752,27 +757,32 @@ def test_rate_limit_retries_stop_at_budget():
     orig_is_rate_limited = gov_mod._is_rate_limited
 
     try:
-        def fake_run_codex(prompt, codex_bin, session_id, agent_name, ui,
-                           logger, round_label, working_dir, pause_event=None):
+
+        def fake_run_codex(
+            prompt, codex_bin, session_id, agent_name, ui, logger, round_label, working_dir, pause_event=None
+        ):
             idx = run_calls["count"]
             run_calls["count"] += 1
             return responses[idx]
 
         gov_mod.run_codex = fake_run_codex
         gov_mod._is_network_error = lambda stderr, rc: False
-        gov_mod._is_rate_limited = (
-            lambda stderr, rc: ("rate limit" in (stderr or "").lower(), "")
-        )
+        gov_mod._is_rate_limited = lambda stderr, rc: ("rate limit" in (stderr or "").lower(), "")
 
         stdout, stderr, rc, duration, new_sid = gov._run_with_recovery(
-            "executor", "Do the task", "P1R1", threading.Event())
+            "executor", "Do the task", "P1R1", threading.Event()
+        )
 
         check("Rate-limit flow stops without success", rc == -2 and stdout == "")
         check("Rate-limit flow respects cap", run_calls["count"] == gov_mod.MAX_RECOVERY_RETRIES + 1)
-        check("Call counter includes every retry",
-              gov.state.get("total_executor_calls") == gov_mod.MAX_RECOVERY_RETRIES + 1)
-        check("No rate-limit halt error shown",
-              not any("Rate limit persists after" in msg for msg in gov.ui.errors))
+        check(
+            "Call counter includes every retry",
+            gov.state.get("total_executor_calls") == gov_mod.MAX_RECOVERY_RETRIES + 1,
+        )
+        check(
+            "No rate-limit halt error shown",
+            not any("Rate limit persists after" in msg for msg in gov.ui.errors),
+        )
     finally:
         gov_mod.run_codex = orig_run_codex
         gov_mod._is_network_error = orig_is_network_error
@@ -784,14 +794,15 @@ def test_existing_functionality():
     print(f"\n{C_BOLD}=== Existing functionality ==={C_RESET}")
 
     # Session ID parsing
-    check("Parse session ID",
-          _parse_session_id("session id: 019d2367-391d-71b0-a6dc-94741344400f")
-          == "019d2367-391d-71b0-a6dc-94741344400f")
+    check(
+        "Parse session ID",
+        _parse_session_id("session id: 019d2367-391d-71b0-a6dc-94741344400f")
+        == "019d2367-391d-71b0-a6dc-94741344400f",
+    )
     check("No session ID", _parse_session_id("random stderr output") is None)
 
     # ANSI stripping
-    check("Strip ANSI",
-          _strip_ansi("\033[91mhello\033[0m") == "hello")
+    check("Strip ANSI", _strip_ansi("\033[91mhello\033[0m") == "hello")
 
     # Verdict parsing
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -828,21 +839,20 @@ def test_existing_functionality():
                 "### Total Phases: 3\n"
             )
         import re
+
         with open(mp) as f:
             content = f.read()
-        match = re.search(r'Total\s+Phases\s*:\s*(\d+)', content, re.IGNORECASE)
+        match = re.search(r"Total\s+Phases\s*:\s*(\d+)", content, re.IGNORECASE)
         check("Phase count from 'Total Phases:'", match and int(match.group(1)) == 3)
 
-        phases = re.findall(r'^##\s+Phase\s+(\d+)', content, re.IGNORECASE | re.MULTILINE)
-        check("Phase headings (anchored, no sub-headings)",
-              sorted(int(p) for p in phases) == [1, 2, 3])
+        phases = re.findall(r"^##\s+Phase\s+(\d+)", content, re.IGNORECASE | re.MULTILINE)
+        check("Phase headings (anchored, no sub-headings)", sorted(int(p) for p in phases) == [1, 2, 3])
 
     # Context anchor and prompt building
     with tempfile.TemporaryDirectory() as tmpdir:
         gov_dir = os.path.join(tmpdir, ".government")
         state = GovernmentState(gov_dir)
-        state.update(source_file="spec.md", current_phase=2, current_step="exec",
-                     phases_completed=[1])
+        state.update(source_file="spec.md", current_phase=2, current_step="exec", phases_completed=[1])
 
         anchor = build_context_anchor(state, tmpdir)
         check("Context anchor has source", "spec.md" in anchor)
@@ -872,7 +882,7 @@ if __name__ == "__main__":
     test_fix5_source_file_always_updated()
     test_fix6_eoferror_handling()
     test_fix7_verify_file_no_workdir_param()
-    test_fix8_session_id_header_only()
+    test_session_id_comes_only_from_structured_event()
     test_fix9_executor_init_no_user_instructions()
     test_fix10_inspector_no_file_modification()
     test_fix11_fallback_no_user_instructions_for_inspector()
@@ -885,7 +895,7 @@ if __name__ == "__main__":
     test_fix18_phase0_migration()
     test_fix19_smart_resume_main()
     test_fix20_rate_limit_wait_supports_manual_and_auto_retry()
-    test_fix21_rate_limit_retries_are_not_capped()
+    test_rate_limit_retries_stop_at_budget()
     test_existing_functionality()
 
     print(f"\n{C_BOLD}{'=' * 60}")

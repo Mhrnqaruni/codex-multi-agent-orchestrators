@@ -1,4 +1,4 @@
-"""Publication gates use fictional data and disposable Git repositories."""
+"""Publication gates use only fictional data and disposable Git repositories."""
 
 import subprocess
 
@@ -7,8 +7,10 @@ import pytest
 from tools.check_public_tree import MAX_BYTES, check_tree, inspect_file
 
 
-@pytest.mark.parametrize("name", ["logs/run/session.json", ".env", "backup.bundle",
-                                  "nested/secret.key", "update.md", "build/app.apk"])
+@pytest.mark.parametrize(
+    "name",
+    ["logs/run/session.json", ".env", "backup.bundle", "nested/secret.key", "update.md", "build/app.apk"],
+)
 def test_forbidden_artifact_paths(name):
     assert "private-artifact-path" in inspect_file(name, b"fictional")
 
@@ -41,8 +43,7 @@ def test_canonical_redactor_masks_constructed_fixture():
 
 
 def run_git(root, *args):
-    return subprocess.run(["git", "-C", str(root), *args], check=True,
-                          capture_output=True, timeout=30)
+    return subprocess.run(["git", "-C", str(root), *args], check=True, capture_output=True, timeout=30)
 
 
 def test_staged_blob_is_checked_even_if_worktree_is_cleaned(tmp_path):

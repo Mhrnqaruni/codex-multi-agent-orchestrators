@@ -56,7 +56,9 @@ def test_network_failure_saves_state_and_stops(engine, monkeypatch):
 
 
 def test_success_preserves_session(engine, monkeypatch):
-    monkeypatch.setattr(congress, "run_codex", Mock(return_value=("deliverable", "", 0, 1, "fictional-thread")))
+    monkeypatch.setattr(
+        congress, "run_codex", Mock(return_value=("deliverable", "", 0, 1, "fictional-thread"))
+    )
     result = engine._run_with_recovery("researcher", "task", 1, threading.Event())
     assert result[:3] == ("deliverable", "", 0)
     assert engine.researcher_session_id == "fictional-thread"
@@ -64,4 +66,5 @@ def test_success_preserves_session(engine, monkeypatch):
 
 def test_legacy_import_is_canonical():
     import congress as legacy
+
     assert legacy.Congress is congress.Congress

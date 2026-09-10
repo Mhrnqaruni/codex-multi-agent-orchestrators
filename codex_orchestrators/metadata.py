@@ -60,14 +60,20 @@ class MetadataLogger:
     def log_agent_start(self, agent: str, round_num, prompt: str) -> None:
         self._event("agent_started", prompt_characters=len(prompt))
 
-    def log_agent_output(self, agent: str, round_num, stdout: str, stderr: str,
-                         returncode: int, duration: float) -> None:
-        self._event("agent_finished", stdout_characters=len(stdout),
-                    stderr_characters=len(stderr), returncode=returncode,
-                    duration=round(duration, 3))
+    def log_agent_output(
+        self, agent: str, round_num, stdout: str, stderr: str, returncode: int, duration: float
+    ) -> None:
+        self._event(
+            "agent_finished",
+            stdout_characters=len(stdout),
+            stderr_characters=len(stderr),
+            returncode=returncode,
+            duration=round(duration, 3),
+        )
 
-    def agent(self, agent: str, round_num, prompt: str, stdout: str, stderr: str,
-              rc: int, duration: float) -> None:
+    def agent(
+        self, agent: str, round_num, prompt: str, stdout: str, stderr: str, rc: int, duration: float
+    ) -> None:
         self.log_agent_output(agent, round_num, stdout, stderr, rc, duration)
 
     def log_round_summary(self, round_num: int, verdict: str) -> None:
