@@ -24,6 +24,7 @@ passed = 0
 failed = 0
 
 def check(name, condition, detail=""):
+    assert condition, f"{name}: {detail}"
     global passed, failed
     if condition:
         print(f"  {C_GREEN}PASS{C_RESET}  {name}")
@@ -285,71 +286,17 @@ def test_fix7_verify_file_no_workdir_param():
         check("Good file passes", ok is True)
 
 
-def test_fix8_session_id_header_only():
-    """Fix 8: Session ID should only be captured from codex startup header, not file content."""
-    print(f"\n{C_BOLD}=== Fix 8: Session ID header-bounded capture ==={C_RESET}")
+def test_session_id_comes_only_from_structured_event():
+    from codex_orchestrators.events import parse_events
+    import json
+    payload = "\n".join(json.dumps(event) for event in [
+        {"type": "thread.started", "thread_id": "fictional-real-thread"},
+        {"type": "item.completed", "item": {
+            "type": "agent_message", "text": "session id: fictional-spoofed-thread"}},
+        {"type": "turn.completed"},
+    ])
+    assert parse_events(payload, "session id: fictional-stderr-spoof", 0).session_id == "fictional-real-thread"
 
-    import inspect
-    from government import run_codex
-
-    src = inspect.getsource(run_codex)
-    check("header_separator_count variable exists",
-          "header_separator_count" in src)
-    check("Checks for '--------' separator lines",
-          'startswith("--------")' in src)
-    check("Only captures when header_separator_count == 1",
-          "header_separator_count == 1" in src)
-
-    # Simulate the header parsing logic
-    # Real codex header:
-    # OpenAI Codex v0.116.0 (research preview)
-    # --------                     ← separator_count becomes 1
-    # workdir: ...
-    # session id: REAL-UUID        ← captured (separator_count == 1)
-    # --------                     ← separator_count becomes 2
-    # user
-    # ... later file content with "session id: WRONG-UUID"  ← NOT captured
-
-    header_separator_count = 0
-    captured_sid = None
-
-    stderr_lines = [
-        "OpenAI Codex v0.116.0 (research preview)\n",
-        "--------\n",
-        "workdir: C:\\project\n",
-        "model: gpt-5.4\n",
-        "session id: aaaa-bbbb-cccc-dddd\n",
-        "--------\n",
-        "user\n",
-        "reading file master.log...\n",
-        "[16:47:20] [EXECUTOR] Session ID: 9999-8888-7777-6666\n",
-        "session id: 9999-8888-7777-6666\n",
-    ]
-
-    for line in stderr_lines:
-        if header_separator_count < 2 and line.strip().startswith("--------"):
-            header_separator_count += 1
-        if header_separator_count == 1 and "session id:" in line.lower():
-            sid = _parse_session_id(line)
-            if sid:
-                captured_sid = sid
-
-    check("Captures real session ID from header",
-          captured_sid == "aaaa-bbbb-cccc-dddd")
-    check("Does NOT capture false session ID from file content",
-          captured_sid != "9999-8888-7777-6666")
-
-    # Edge case: no session id in header
-    header_separator_count = 0
-    captured_sid = None
-    for line in ["--------\n", "workdir: test\n", "--------\n", "session id: fake\n"]:
-        if header_separator_count < 2 and line.strip().startswith("--------"):
-            header_separator_count += 1
-        if header_separator_count == 1 and "session id:" in line.lower():
-            sid = _parse_session_id(line)
-            if sid:
-                captured_sid = sid
-    check("No capture after header closes (separator_count == 2)", captured_sid is None)
 
 
 def test_fix9_executor_init_no_user_instructions():
@@ -726,7 +673,7 @@ def test_fix20_rate_limit_wait_supports_manual_and_auto_retry():
         gov_mod.time.monotonic = orig_mono
 
 
-def test_fix21_rate_limit_retries_are_not_capped():
+def test_rate_limit_retries_stop_at_budget():
     """Fix 21: rate-limit retries should continue past the old shared retry cap."""
     print(f"\n{C_BOLD}=== Fix 21: Rate-limit retries are uncapped ==={C_RESET}")
 
@@ -820,10 +767,10 @@ def test_fix21_rate_limit_retries_are_not_capped():
         stdout, stderr, rc, duration, new_sid = gov._run_with_recovery(
             "executor", "Do the task", "P1R1", threading.Event())
 
-        check("Rate-limit flow eventually succeeds", rc == 0 and stdout == "done")
-        check("Rate-limit flow retries past old cap", run_calls["count"] == 6)
+        check("Rate-limit flow stops without success", rc == -2 and stdout == "")
+        check("Rate-limit flow respects cap", run_calls["count"] == gov_mod.MAX_RECOVERY_RETRIES + 1)
         check("Call counter includes every retry",
-              gov.state.get("total_executor_calls") == 6)
+              gov.state.get("total_executor_calls") == gov_mod.MAX_RECOVERY_RETRIES + 1)
         check("No rate-limit halt error shown",
               not any("Rate limit persists after" in msg for msg in gov.ui.errors))
     finally:

@@ -36,7 +36,6 @@ STARTUP_TIMEOUT = 120          # kill if no output within 2 min of launch
 COOLDOWN_BETWEEN = 5           # seconds between codex calls
 FILE_VERIFY_RETRIES = 3        # retry count if expected file not found
 AUTO_CONTINUE_TIMEOUT = 300    # auto-continue to next phase after 5 min (0=disabled)
-APPROVAL_FLAG = "--dangerously-bypass-approvals-and-sandbox"
 
 # Rate limit / billing keywords (case-insensitive check against stderr)
 RATE_LIMIT_SIGNALS = ("usage limit", "rate limit", "rate_limit", "quota",
@@ -177,13 +176,6 @@ def _exit_cbreak(old_settings):
         pass
 
 
-def _check_internet(timeout=3) -> bool:
-    """Quick TCP connectivity check to Anthropic API server."""
-    try:
-        socket.create_connection(("api.anthropic.com", 443), timeout=timeout).close()
-        return True
-    except OSError:
-        return False
 
 
 def _strip_ansi(text: str) -> str:
@@ -387,46 +379,9 @@ class TerminalUI:
 # LOGGING SYSTEM
 # ============================================================================
 
-class GovernmentLogger:
-    def __init__(self, gov_dir: str):
-        self.log_dir = os.path.join(gov_dir, "logs")
-        os.makedirs(self.log_dir, exist_ok=True)
-        self.master_path = os.path.join(self.log_dir, "master.log")
-        self.executor_path = os.path.join(self.log_dir, "executor.log")
-        self.inspector_path = os.path.join(self.log_dir, "inspector.log")
-        for p in [self.master_path, self.executor_path, self.inspector_path]:
-            if not os.path.exists(p):
-                with open(p, "w", encoding="utf-8") as f:
-                    f.write(f"{'=' * 80}\n  GOVERNMENT LOG — {datetime.now()}\n{'=' * 80}\n\n")
-
-    def _append(self, path: str, text: str):
-        try:
-            with open(path, "a", encoding="utf-8") as f:
-                f.write(text)
-        except OSError:
-            pass
-
-    def master(self, tag: str, msg: str):
-        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
-        self._append(self.master_path, f"[{ts}] [{tag}] {msg}\n")
-
-    def agent(self, agent: str, round_num: int, prompt: str, stdout: str,
-              stderr: str, rc: int, duration: float):
-        path = self.executor_path if agent == "executor" else self.inspector_path
-        self._append(path, (
-            f"\n{'=' * 70}\n"
-            f"ROUND {round_num} | rc={rc} | {duration:.1f}s | {datetime.now()}\n"
-            f"{'=' * 70}\n"
-            f"PROMPT ({len(prompt)} chars):\n{'─' * 40}\n{prompt}\n{'─' * 40}\n"
-            f"STDOUT ({len(stdout)} chars):\n{'─' * 40}\n{stdout}\n{'─' * 40}\n"
-        ))
-        if stderr.strip():
-            self._append(path, f"STDERR:\n{'─' * 40}\n{stderr}\n{'─' * 40}\n")
+from codex_orchestrators.metadata import MetadataLogger as GovernmentLogger
 
 
-# ============================================================================
-# STATE MANAGEMENT
-# ============================================================================
 
 class GovernmentState:
     """Persistent state tracker with atomic writes."""
@@ -681,188 +636,18 @@ def run_codex(prompt: str, codex_bin: str, session_id: str | None,
               round_label: str, working_dir: str,
               pause_event: threading.Event | None = None,
               ) -> tuple[str, str, int, float, str | None]:
-    """
-    Run Codex CLI. If session_id is provided, resume that session.
-    Otherwise start new session.
+    """Run through the shared, bounded JSONL adapter; no shell launchers."""
+    from codex_orchestrators.adapter import execute
+    from codex_orchestrators.recovery import RunBudget
 
-    Returns (stdout, stderr, returncode, duration, session_id).
-    rc special values: -1 = launch/timeout error, -2 = KeyboardInterrupt, -3 = network error.
-    session_id is captured from stderr on new sessions.
-
-    Timeout: tracks activity on BOTH pipes. stderr activity (codex thinking)
-    resets the silence timer.
-    """
-    if os.name == "nt" and codex_bin.lower().endswith((".cmd", ".bat")):
-        base_cmd = ["cmd.exe", "/c", codex_bin]
-    else:
-        base_cmd = [codex_bin]
-
-    if session_id:
-        cmd = base_cmd + ["exec", "resume", session_id,
-                          APPROVAL_FLAG, "--skip-git-repo-check", "-"]
-    else:
-        cmd = base_cmd + ["exec", APPROVAL_FLAG, "--skip-git-repo-check", "-"]
-
-    logger.master(agent_name.upper(), f"CMD: {' '.join(cmd)}")
-    logger.master(agent_name.upper(), f"CWD: {working_dir}")
-
-    start_time = time.time()
-    proc = None
-
-    try:
-        env = os.environ.copy()
-        env["PYTHONIOENCODING"] = "utf-8"
-        proc = subprocess.Popen(
-            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            text=True, encoding="utf-8", errors="replace",
-            cwd=working_dir, env=env,
-        )
-    except Exception as e:
-        d = time.time() - start_time
-        logger.master(agent_name.upper(), f"Launch failed: {e}")
-        return "", str(e), -1, d, None
-
-    # Write prompt
-    try:
-        proc.stdin.write(prompt)
-        proc.stdin.close()
-    except Exception as e:
-        logger.master(agent_name.upper(), f"STDIN write failed: {e}")
-        ui.error(f"Failed to send prompt: {e}")
-        _kill_proc(proc)
-        d = time.time() - start_time
-        return "", f"stdin failed: {e}", -1, d, session_id
-
-    # Reader threads
-    q = queue.Queue()
-    threading.Thread(target=_pipe_reader, args=(proc.stdout, q, "out"), daemon=True).start()
-    threading.Thread(target=_pipe_reader, args=(proc.stderr, q, "err"), daemon=True).start()
-
-    stdout_lines = []
-    stderr_lines = []
-    done_flags = set()
-    last_activity = time.time()
-    codex_started = False
-    out_count = 0
-    err_count = 0
-    captured_sid = session_id  # keep existing or capture new
-    header_separator_count = 0  # track "--------" lines to detect end of startup header
-    interactive = sys.stdin.isatty()
-    pause_hint = " [P=pause]" if interactive and pause_event else ""
-    inet_down = threading.Event()  # set by background internet check thread
-
-    # Enter cbreak mode on Unix for single-keypress detection during codex run
-    old_term = _enter_cbreak() if (interactive and pause_event) else None
-
-    try:
-        while len(done_flags) < 2:
-            try:
-                tag, line = q.get(timeout=1.0)
-            except queue.Empty:
-                silent = int(time.time() - last_activity)
-
-                if not codex_started and silent >= STARTUP_TIMEOUT:
-                    _kill_proc(proc)
-                    d = time.time() - start_time
-                    msg = f"Codex did not start within {STARTUP_TIMEOUT}s"
-                    logger.master(agent_name.upper(), msg)
-                    return "", msg, -1, d, captured_sid
-
-                if codex_started and silent >= SILENCE_TIMEOUT:
-                    _kill_proc(proc)
-                    d = time.time() - start_time
-                    msg = f"Timed out: zero activity for {silent}s"
-                    logger.master(agent_name.upper(), msg)
-                    return "".join(stdout_lines), msg, -1, d, captured_sid
-
-                # Background internet check on prolonged silence
-                if codex_started and silent > 30 and silent % 30 == 0 and not inet_down.is_set():
-                    def _bg_inet(evt):
-                        if not _check_internet(timeout=3):
-                            evt.set()
-                    threading.Thread(target=_bg_inet, args=(inet_down,), daemon=True).start()
-
-                if inet_down.is_set():
-                    _kill_proc(proc)
-                    d = time.time() - start_time
-                    msg = "NETWORK_ERROR: Internet connection lost during codex execution"
-                    logger.master(agent_name.upper(), msg)
-                    return "".join(stdout_lines), msg, -3, d, captured_sid
-
-                # Check for pause keypress
-                if interactive and pause_event and not pause_event.is_set() and _kbhit():
-                    ch = _read_key()
-                    if ch == 'p':
-                        pause_event.set()
-                        ui.status("Pause queued — will pause after this agent finishes.", C_YELLOW)
-
-                if silent > 0 and silent % 5 == 0:
-                    elapsed = int(time.time() - start_time)
-                    if not codex_started:
-                        sys.stdout.write(
-                            f"\r  {C_YELLOW}|{C_RESET} Waiting for Codex... "
-                            f"{C_DIM}({silent}s){C_RESET}    ")
-                    else:
-                        sys.stdout.write(
-                            f"\r  {C_YELLOW}|{C_RESET} {agent_name} working... "
-                            f"{C_DIM}({elapsed}s, silent {silent}s){pause_hint}{C_RESET}    ")
-                    sys.stdout.flush()
-                continue
-
-            if tag == "out_done":
-                done_flags.add("out")
-                continue
-            if tag == "err_done":
-                done_flags.add("err")
-                continue
-
-            # ANY output = alive
-            last_activity = time.time()
-            codex_started = True
-            inet_down.clear()  # got output, internet is fine
-            ui.clear_line()
-
-            if tag == "out":
-                stdout_lines.append(line)
-                out_count += 1
-                if out_count <= 5 or out_count % 20 == 0:
-                    ui.stream_line(agent_name, line)
-                elif out_count == 6:
-                    _print_safe(f"  {C_DIM}  ... streaming (showing every 20th line) ...{C_RESET}")
-            else:
-                stderr_lines.append(line)
-                err_count += 1
-                # Track header boundaries (two "--------" separator lines)
-                if header_separator_count < 2 and line.strip().startswith("--------"):
-                    header_separator_count += 1
-                # Capture session id ONLY from within the startup header
-                if header_separator_count == 1 and "session id:" in line.lower():
-                    sid = _parse_session_id(line)
-                    if sid:
-                        captured_sid = sid
-                # Show some stderr so user knows codex is thinking
-                stripped = line.strip()
-                if stripped and err_count <= 5:
-                    _print_safe(f"  {C_DIM}  [codex] {stripped[:80]}{C_RESET}")
-                elif err_count == 6:
-                    _print_safe(f"  {C_DIM}  [codex] ... (suppressing further stderr){C_RESET}")
-
-    except KeyboardInterrupt:
-        ui.error("Interrupted! Killing Codex...")
-        _kill_proc(proc)
-        d = time.time() - start_time
-        logger.master(agent_name.upper(), f"Interrupted after {d:.1f}s")
-        return "".join(stdout_lines), "Interrupted", -2, d, captured_sid
-    finally:
-        _exit_cbreak(old_term)
-
-    proc.wait()
-    d = time.time() - start_time
-
-    if out_count > 5:
-        _print_safe(f"  {C_DIM}  ... {out_count} total lines{C_RESET}")
-
-    return "".join(stdout_lines), "".join(stderr_lines), proc.returncode, d, captured_sid
+    if not hasattr(logger, "run_budget"):
+        logger.run_budget = RunBudget()
+    return execute(
+        prompt, codex_bin, agent_name, working_dir,
+        budget=logger.run_budget, session_id=session_id,
+        timeout=min(SILENCE_TIMEOUT, 600),
+        cancel=pause_event,
+    )
 
 
 # ============================================================================
@@ -1409,30 +1194,9 @@ class Government:
         self.logger.master("SYSTEM", "Resumed by user")
 
     def _wait_for_internet(self) -> bool:
-        """Wait for internet to come back. Returns False if user quits."""
-        _flush_input()
-        self.ui.error("Internet connection lost. Waiting for reconnection...")
-        self.logger.master("SYSTEM", "Internet lost — auto-paused")
-        old_term = _enter_cbreak()
-        try:
-            wait = 0
-            while not _check_internet():
-                time.sleep(5)
-                wait += 5
-                if _kbhit():
-                    ch = _read_key()
-                    if ch == 'q':
-                        self._interrupt_requested = True
-                        self.ui.status("Quit requested.", C_RED)
-                        return False
-                if wait % 30 == 0:
-                    self.ui.status(
-                        f"Waiting for internet ({wait}s)... [Q=quit]", C_DIM)
-        finally:
-            _exit_cbreak(old_term)
-        self.ui.status(f"Internet restored after {wait}s!", C_GREEN)
-        self.logger.master("SYSTEM", f"Internet restored after {wait}s")
-        return True
+        """Brief bounded backoff; the next CLI result is the connectivity signal."""
+        time.sleep(2)
+        return not self._interrupt_requested
 
     def _wait_for_rate_limit(self, retry_info: str) -> str:
         """Wait for manual retry or hourly auto-retry. Returns an action string."""
@@ -1501,6 +1265,9 @@ class Government:
 
         while True:
             current_sid = self.state.get(sid_key)
+            if attempt >= MAX_RECOVERY_RETRIES + 1:
+                self._interrupt_requested = True
+                return "", "recovery attempt budget exhausted", -2, total_duration, current_sid
 
             if attempt > 0:
                 # Retry — prepend continuation context
@@ -1532,6 +1299,10 @@ class Government:
             if rc == -2:
                 self._interrupt_requested = True
                 return stdout, stderr, rc, total_duration, new_sid
+            from codex_orchestrators.recovery import classify_failure, Failure
+            if classify_failure(stderr, rc) is Failure.TERMINAL:
+                self._interrupt_requested = True
+                return "", stderr, rc or 1, total_duration, new_sid
 
             # --- Priority 2: Network error ---
             if rc == -3 or _is_network_error(stderr, rc):
@@ -1556,11 +1327,6 @@ class Government:
                 self.ui.error(f"API rate/usage limit hit for {agent}.{retry_info}")
                 self.logger.master(agent.upper(),
                                    f"RATE LIMIT (attempt {attempt+1}): {stderr[:300]}")
-                has_output = bool(stdout.strip())
-                if has_output:
-                    # Codex finished its task — output is valid, don't retry
-                    return stdout, stderr, 0, total_duration, new_sid
-
                 wait_started = time.monotonic()
                 wait_action = self._wait_for_rate_limit(retry_info)
                 total_duration += time.monotonic() - wait_started
@@ -1661,6 +1427,13 @@ class Government:
                 return ""
 
         output = stdout.strip()
+        if agent == "inspector" and output and rc == 0:
+            from pathlib import Path
+            from codex_orchestrators.workspace import write_government_review
+            write_government_review(
+                Path(self.working_dir), self.state.get("current_step", "init"),
+                self.state.get("current_phase", 0), output,
+            )
         self.ui.status(
             f"{agent.capitalize()} finished ({duration:.0f}s, {len(output)} chars)",
             C_BLUE if agent == "executor" else C_MAGENTA
