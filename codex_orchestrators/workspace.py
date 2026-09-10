@@ -10,6 +10,12 @@ import subprocess
 from .policies import PolicyError
 
 
+def is_linklike(path: Path) -> bool:
+    """Cover Windows junctions on Python 3.11, before Path.is_junction exists."""
+    info = path.lstat()
+    return path.is_symlink() or bool(getattr(info, "st_file_attributes", 0) & 0x400)
+
+
 def prepare_worktree(source: Path, destination: Path, branch: str) -> str:
     """Create an isolated edit branch, only after a clean source preflight.
 
@@ -71,7 +77,7 @@ def fingerprint(root: Path) -> str:
             if path == root / ".git":
                 continue
             info = path.lstat()
-            if path.is_symlink() or getattr(path, "is_junction", lambda: False)():
+            if is_linklike(path):
                 raise PolicyError("Candidate contains a link/reparse point")
             if stat.S_ISDIR(info.st_mode):
                 continue
@@ -105,7 +111,7 @@ def write_government_review(root: Path, step: str, phase: int, output: str) -> N
     for node in (path, *path.parents):
         if node == root:
             break
-        if node.is_symlink() or getattr(node, "is_junction", lambda: False)():
+        if (node.exists() and is_linklike(node)) or node.is_symlink():
             raise PolicyError("Review destination contains a link")
         if node.is_file() and node.stat().st_nlink != 1:
             raise PolicyError("Review destination is hard-linked")

@@ -42,6 +42,9 @@ def execute(
                 "The orchestrator captures your response and writes the review artifact. "
                 "Any older instruction to save a file is superseded by this transport contract.\n\n" + prompt
             )
+        remaining = min(remaining, budget.max_seconds - (time.monotonic() - budget.started))
+        if remaining <= 0:
+            raise RuntimeError("budget exhausted")
         result = run_process(
             build_command(executable, role, workspace, session_id),
             cwd=root,

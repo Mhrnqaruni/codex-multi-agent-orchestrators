@@ -3,6 +3,7 @@
 from pathlib import Path
 import subprocess
 import sys
+import tarfile
 import zipfile
 
 
@@ -42,7 +43,48 @@ def main() -> int:
                 raise RuntimeError("License metadata mismatch")
             if "Requires-Dist:" in metadata:
                 raise RuntimeError("Unexpected runtime dependency")
+            prefix = metadata_names[0].removesuffix("METADATA")
+            allowed_metadata = {
+                prefix + name
+                for name in (
+                    "METADATA",
+                    "WHEEL",
+                    "entry_points.txt",
+                    "top_level.txt",
+                    "RECORD",
+                    "licenses/LICENSE",
+                )
+            }
+            if set(names) - actual - allowed_metadata or len(names) != len(set(names)):
+                raise RuntimeError("Unexpected or duplicate wheel metadata")
+            if archive.read(prefix + "licenses/LICENSE") != (root / "LICENSE").read_bytes():
+                raise RuntimeError("Packaged license text differs from candidate")
         print(f"Wheel content/source/license check passed: {wheel.name}")
+    tracked_all = set(
+        subprocess.run(["git", "ls-files", "-z"], cwd=root, check=True, capture_output=True)
+        .stdout.decode()
+        .split("\0")
+    )
+    sdists = list((root / "dist").glob("*.tar.gz"))
+    if not sdists:
+        raise RuntimeError("Build an sdist before inspection")
+    for sdist in sdists:
+        with tarfile.open(sdist) as archive:
+            for member in archive.getmembers():
+                parts = Path(member.name).parts
+                if Path(member.name).is_absolute() or ".." in parts or member.issym() or member.islnk():
+                    raise RuntimeError("Unsafe sdist member")
+                if member.isdir():
+                    continue
+                relative = Path(*parts[1:]).as_posix()
+                generated = relative in {"PKG-INFO", "setup.cfg"} or relative.startswith(
+                    "codex_multi_agent_orchestrators.egg-info/"
+                )
+                if not generated and relative not in tracked_all:
+                    raise RuntimeError("Untracked file in sdist")
+                if not member.isfile():
+                    raise RuntimeError("Nonregular sdist member")
+        print(f"Sdist tracked-content check passed: {sdist.name}")
     return 0
 
 

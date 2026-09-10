@@ -10,7 +10,7 @@ from . import __version__
 from .demo import run_demo
 from .metadata import state_base
 from .policies import Role, build_command
-from .workspace import prepare_worktree
+from .workspace import is_linklike, prepare_worktree
 
 
 def purge_diagnostics(*, older_than_days: int, apply: bool = False) -> int:
@@ -24,24 +24,20 @@ def purge_diagnostics(*, older_than_days: int, apply: bool = False) -> int:
     root = state_base() / "diagnostics"
     if not root.exists():
         return 0
-    if root.is_symlink() or getattr(root, "is_junction", lambda: False)():
+    if any(is_linklike(node) for node in (root, *root.parents)):
         raise ValueError("Refusing linked diagnostics directory")
     cutoff = time.time() - older_than_days * 86400
     count = 0
     for directory in root.iterdir():
         if not re.fullmatch(r"[a-f0-9]{32}", directory.name):
             continue
-        if (
-            directory.is_symlink()
-            or getattr(directory, "is_junction", lambda: False)()
-            or not directory.is_dir()
-        ):
+        if is_linklike(directory) or not directory.is_dir():
             continue
         files = list(directory.iterdir())
         if len(files) != 1 or files[0].name != "events.jsonl":
             continue
         artifact = files[0]
-        if artifact.is_symlink() or not artifact.is_file() or artifact.stat().st_nlink != 1:
+        if is_linklike(artifact) or not artifact.is_file() or artifact.stat().st_nlink != 1:
             continue
         if artifact.stat().st_mtime >= cutoff:
             continue
