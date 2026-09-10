@@ -304,7 +304,7 @@ project content when reporting a problem.
 
 ## Development and evidence
 
-Use the environment created above, from the tool checkout. These commands are
+Use the environment created above from the tool checkout. These commands are
 for contributors, not prerequisites for trying the offline demo:
 
 ```powershell
