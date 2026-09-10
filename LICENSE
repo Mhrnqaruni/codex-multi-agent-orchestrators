@@ -1,0 +1,92 @@
+Codex Orchestrators Noncommercial Source License 1.0
+
+Copyright (c) 2026 Mhrnqaruni and contributors. All rights reserved except
+as expressly granted below.
+
+1. Scope and acceptance
+
+"Software" means the original code, prompts, documentation, and examples
+provided under this license, including modifications and derivative works.
+"Licensor" means the copyright holder granting rights in that material.
+Exercising rights granted by this license constitutes acceptance of its terms.
+Separately identified third-party materials remain under their own licenses.
+
+2. Permitted noncommercial use
+
+Subject to all conditions below, the Licensor grants a worldwide, royalty-free,
+nonexclusive license to read, run, reproduce, study, and modify the Software
+solely for noncommercial personal learning, hobby projects, independent
+noncommercial research, and noncommercial educational activities.
+
+You may distribute the Software and your modifications free of charge solely
+for these permitted purposes, with this license, all copyright notices, and a
+clear notice of your changes. You must not offer the Software or modifications
+under terms granting commercial rights. Each recipient receives permission
+directly under this license; you may not sublicense broader rights.
+
+3. Commercial use is excluded
+
+No permission is granted to use, modify, distribute, provide access to, or
+incorporate the Software or any substantial portion of it for a purpose
+primarily directed toward commercial advantage, monetary compensation,
+revenue, or profit, whether direct or indirect and whether or not profit is
+actually realized. Prohibited purposes include:
+
+- selling or licensing the Software, modifications, or access to them;
+- providing paid, subscription, hosted, SaaS, or monetized services using it;
+- using it for paid consulting, freelance work, client deliverables, or work
+  performed as part of a compensated employment or commercial engagement;
+- internal business operations, automation, or cost savings for a business;
+- developing, testing, or operating commercial products or services with it;
+- commercial training, paid courses, advertising-supported services, or
+  commercial model training using the Software.
+
+Nonprofit, charitable, educational, governmental, or research status does not
+create an exception for activities prohibited by this section. A recipient
+cannot avoid these restrictions by making minor changes, changing the name,
+combining the Software with other materials, or charging for an associated
+service instead of the Software itself.
+
+4. Portfolio and hiring evaluation
+
+Notwithstanding section 3, individuals may show their permitted noncommercial
+contributions in a CV or portfolio. Recruiters and prospective employers may
+read the source and run the included synthetic examples solely to evaluate
+those contributions or the author's engineering skills. This exception grants
+no right to use the Software in business operations or to produce commercial
+deliverables. Attribution must not imply endorsement by the Licensor.
+
+5. Outputs and reserved rights
+
+This license does not claim ownership of independently created input data or
+generated outputs merely because they were processed by the Software. This
+does not authorize operating the Software for a prohibited purpose. Outputs
+that contain substantial portions of the Software remain subject to this
+license to that extent. No trademark rights are granted. Rights not expressly
+granted are reserved. Mandatory statutory rights, including applicable fair
+use or fair dealing rights, are not restricted by this license.
+
+6. Termination
+
+The permissions granted by this license terminate automatically upon a breach.
+After termination, you must stop activities requiring these permissions and
+remove copies within your control, except copies required by law. Restoration
+requires written permission from the relevant Licensor. Distribution already
+made to compliant recipients does not terminate their independent permissions.
+
+7. Disclaimer and limitation of liability
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED "AS IS",
+WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. IN NO EVENT
+SHALL THE LICENSOR OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE,
+WHETHER IN CONTRACT, TORT, OR OTHERWISE.
+
+8. Interpretation
+
+This is a source-available license with noncommercial restrictions. It is not
+an OSI-approved open-source license. No commercial permission is implied by
+public repository visibility, access to source, or acceptance of contributions.
+If a provision is unenforceable, the remaining provisions continue to apply
+to the maximum extent permitted by law.

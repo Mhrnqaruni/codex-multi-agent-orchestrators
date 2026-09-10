@@ -1,271 +1,172 @@
 # Codex Multi-Agent Orchestrators
 
-Private tooling for running two different multi-agent workflows on top of the Codex CLI:
+Durable Python workflows around the Codex CLI: create a deliverable, review it,
+track evidence, and recover from interrupted work without treating partial
+output as success.
 
-- `congress.py` runs a Researcher plus Inspector debate loop to improve a single answer.
-- `government.py` runs a persistent Executor plus Inspector pipeline to plan, execute, review, and resume a project phase by phase.
-- `test_government_fixes.py` is the regression test suite for `government.py`.
+**Alpha · source available for noncommercial use · Python 3.11+ · no third-party
+Python runtime dependencies**
 
-The repository is built around Python's standard library. There are no third-party Python runtime dependencies in the code itself.
+This is an independent project, not an official OpenAI product. This alpha is
+maintained privately while publication requirements are resolved. **Do not make this repository's
+existing history public.** See the [release gates](docs/READINESS.md).
 
-## Requirements
+## What the project does
 
-- Python 3.10 or newer
-- Codex CLI installed and authenticated
-- `pytest` if you want to run the test suite with pytest
-- `gh` only if you want to publish or manage the repository from the terminal
+| Workflow | Intended use | Main artifacts |
+|---|---|---|
+| Congress | Iteratively create and review explicitly requested files | Deliverables, review assessments, output hashes, controlled result status, resumable state |
+| Government | Plan and execute a project in reviewed phases | Master plan, phase plans, execution reports, review files, resumable phase state |
 
-Developed and tested primarily on Windows PowerShell. The scripts include Unix fallbacks for keyboard handling where possible.
-
-## Repository Contents
-
-```text
-congress.py
-government.py
-test_government_fixes.py
-update.md
-logs/
-```
-
-## Important Runtime Behavior
-
-Both orchestration scripts call Codex through `codex exec` and currently pass:
-
-```bash
---dangerously-bypass-approvals-and-sandbox --skip-git-repo-check
-```
-
-Use them only in a trusted workspace.
-
-## Quick Start
-
-1. Verify the Codex CLI is available:
-
-```powershell
-codex --version
-```
-
-2. Check the script help:
-
-```powershell
-python congress.py --help
-python government.py --help
-```
-
-3. Run the test suite:
-
-```powershell
-pytest -q test_government_fixes.py
-python test_government_fixes.py
-```
-
-## Script Reference
-
-### `congress.py`
-
-Purpose:
-
-- Best for one-off questions, research tasks, code design requests, and answer refinement.
-- Starts a fresh Codex session for every agent call.
-- Stops when the Inspector returns `VERDICT: APPROVED` or when the round limit is reached.
-
-Command syntax:
-
-```powershell
-python congress.py
-python congress.py --query="How do I implement a binary search tree?"
-python congress.py --max-rounds=5
-python congress.py --timeout=900
-python congress.py --workdir="C:\MyProject"
-python congress.py --codex-bin="C:\Path\To\codex.cmd"
-python congress.py --approval="--dangerously-bypass-approvals-and-sandbox"
-```
-
-Command-line options:
-
-- `--max-rounds=N` sets the maximum debate rounds. Default: `3`
-- `--timeout=N` sets the silence timeout in seconds. Default: `600`
-- `--codex-bin=PATH` points to a specific Codex executable
-- `--workdir=PATH` sets the working directory passed to Codex. Default: current directory
-- `--query="..."` runs one non-interactive task and exits
-- `--approval=FLAG` overrides the approval flag passed to Codex
-- `--help` prints usage
-
-Interactive mode behavior:
-
-- `quit`, `exit`, or `q` exits the tool
-- `logs` opens the local `logs/` folder
-- `rounds N` changes the current max rounds
-- entering a line ending with `\` continues input on the next line
-
-Between-agent transition controls:
-
-- `C` continues immediately
-- `P` pauses and waits for your command
-- `O` finalizes the current researcher output early
-- `Q` quits the current session
-
-Files written by `congress.py`:
+Congress is the canonical successor to the original scripts. It retains output
+contracts, state migration, locking, task classification, a second review stage,
+and evidence-based approval gates. Government retains its distinct phased
+workflow; both use the same policy and process boundary.
 
 ```text
-logs/<session_id>/
-  final_output.txt
-  master.log
-  researcher.log
-  inspector.log
-  session.json
-  rounds/
-    round_<n>_researcher.txt
-    round_<n>_inspector.txt
+Request → dedicated edit worktree → Researcher / Executor
+                    ↑                       ↓
+              revision request ← read-only Inspector
+                                            ↓
+                           output / review / verification gates
+                                            ↓
+                              approved, blocked, or resumable stop
 ```
 
-Notes:
+Separate roles are not a guarantee of independent judgment. Reviewers using the
+same model/provider may share errors. An agent's verdict is not proof that a
+project is correct or secure.
 
-- Researcher output is truncated before being embedded back into later prompts if it exceeds the internal prompt-size guard.
-- Rate-limit errors are detected from Codex stderr and stop the session cleanly instead of retrying forever.
+## Try it without a Codex account
 
-### `government.py`
-
-Purpose:
-
-- Best for turning a project specification or plan into a resumable, phase-based implementation workflow.
-- Keeps persistent Executor and Inspector sessions and stores their session IDs in `.government/state.json`.
-- Creates plans, reviews, execution reports, approved copies, and resumable state on disk.
-
-Command syntax:
+From an authorized checkout, create a virtual environment and install locally:
 
 ```powershell
-python government.py
-python government.py C:\MyProject
-python government.py spec.md
-python government.py --source=spec.md
-python government.py --source=spec.md --workdir=C:\MyProject
-python government.py --source=spec.md --instructions="Target Python 3.12 only"
-python government.py --auto-continue=0
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install .
+.\.venv\Scripts\python.exe -m codex_orchestrators demo
+.\.venv\Scripts\python.exe -m codex_orchestrators policy --role review
 ```
 
-Command-line options:
+On Linux, use `.venv/bin/python` instead. Installation may download the build
+backend; **the demo and policy commands themselves use no network, credentials,
+or model calls**. No package has been published to PyPI.
 
-- `--source=FILE` sets the project specification or plan file
-- `--workdir=DIR` sets the working directory
-- `--instructions="..."` adds extra instructions for the Executor workflow
-- `--max-review-rounds=N` sets the soft-stop review limit per loop. Default: `7`
-- `--timeout=N` sets silence timeout in seconds. Default: `600`
-- `--auto-continue=N` sets post-phase auto-continue seconds. Default: `300`; `0` disables it
-- `--codex-bin=PATH` points to a specific Codex executable
-- `--help` prints usage
+The demo exercises synthetic retry classification, JSONL response validation,
+role-policy construction, and candidate-change detection. It reports
+`live_model_calls: 0`. It is a reproducible boundary demonstration, **not a live
+agent demo, complete engine simulation, or model-quality benchmark**.
 
-Start modes:
+## Safety defaults
 
-- `python government.py` starts interactive mode and asks for the working directory and source file
-- `python government.py <directory>` opens an existing workspace or starts there
-- `python government.py <file>` treats the positional argument as the source file
-- `python government.py --source=<file>` starts directly from a known spec file
+- Writers request `workspace-write`; Inspectors request `read-only`.
+- Approval escalation is disabled. There is no full-host-access switch.
+- User configuration and custom exec rules are not loaded; project `.codex`
+  configuration is rejected by the adapter.
+- Generated-command network access and web search are disabled by configuration.
+- The launcher receives a documented environment allowlist, not all parent secrets.
+- Codex is invoked as a native executable, without a command shell. Windows
+  `.cmd`, `.bat`, and `.ps1` launchers are rejected.
+- Calls, retry attempts, output size, and process lifetime have ceilings. POSIX
+  process groups and Windows kill-on-close jobs clean up descendants.
+- Diagnostic files contain counts and event metadata, not raw prompts or responses.
+- Discovered target-project test/build commands are **blocked on the host**.
+  Naming a script `test` does not authorize it to execute.
 
-High-level workflow:
+These are implemented controls with deterministic tests, not a security
+certification. Codex provides the actual command sandbox. A read-only sandbox
+does not necessarily hide readable host files, and the CLI needs access to its
+authentication. Use a dedicated OS account or disposable VM for untrusted code.
+See the [threat model](docs/THREAT_MODEL.md) before any live run.
 
-1. Initialize the persistent Executor session
-2. Initialize the persistent Inspector session
-3. Create and review `master_plan.md`
-4. For each phase, create and review `phase_<n>/plan.md`
-5. Execute the phase and review `phase_<n>/exec_report.md`
-6. Save a short phase summary into state and `project_status.md`
-7. Stop, continue, abort, or extend depending on user choices
+## Live workflow status
 
-Files and folders written by `government.py`:
+Live orchestration remains experimental and has not passed the publication
+safety gate. Do not use production data, client repositories, or privileged
+accounts. The [compatibility page](docs/COMPATIBILITY.md) records exactly what
+has and has not been verified.
 
-```text
-<workdir>/
-  .government/
-    state.json
-    logs/
-    pause
-  master_plan.md
-  master_plan_review.md
-  project_status.md
-  phase_<n>/
-    plan.md
-    plan_review.md
-    plan_approved.md
-    exec_report.md
-    exec_review.md
-    exec_report_approved.md
-    .archive/
-```
-
-What each generated file means:
-
-- `master_plan.md` is the top-level phase breakdown for the whole project
-- `master_plan_review.md` is the Inspector's review of the master plan
-- `project_status.md` is the current summary of completed and active phases
-- `phase_<n>/plan.md` is the detailed implementation plan for one phase
-- `phase_<n>/plan_review.md` is the Inspector's review of that phase plan
-- `phase_<n>/plan_approved.md` is the approved copy of the phase plan
-- `phase_<n>/exec_report.md` is the Executor's implementation and verification report
-- `phase_<n>/exec_review.md` is the Inspector's review of the execution report
-- `phase_<n>/exec_report_approved.md` is the approved execution report
-- `phase_<n>/.archive/` stores versioned snapshots before a file is revised
-- `.government/state.json` is the durable source of truth for resume state, sessions, and counters
-
-Pause and resume controls:
-
-- press `P` while an agent is running to queue an interactive pause
-- create `<workdir>\.government\pause` to force a filesystem-based pause
-- at the soft-stop prompt, choose `c` to continue, `s` to skip, or `a` to abort
-- at the phase checkpoint, choose `c` to continue, `d` to mark the project done, or `a` to abort
-- when a previous workspace already contains `.government/state.json`, the launcher offers resume, extend, start-fresh, or quit choices depending on the saved state
-
-Resilience features:
-
-- persistent session IDs are captured from Codex startup stderr headers
-- expired sessions fall back to fresh sessions
-- network interruptions are retried with recovery logic
-- rate-limit and billing errors are detected and handled separately from session errors
-- resume logic restores work at the master-plan, phase-plan, or execution loop level
-
-### `test_government_fixes.py`
-
-Purpose:
-
-- Verifies `government.py` control-flow and recovery logic without needing the Codex CLI
-- Covers state persistence, resume behavior, verdict parsing, session ID capture, phase counting, pause handling, and regression fixes
-
-Usage:
+The installed entry points are:
 
 ```powershell
-pytest -q test_government_fixes.py
-python test_government_fixes.py
+.\.venv\Scripts\codex-congress.exe --help
+.\.venv\Scripts\codex-government.exe --help
 ```
 
-Behavior:
-
-- `pytest -q test_government_fixes.py` is the cleanest automation path
-- `python test_government_fixes.py` runs the same checks in a standalone terminal-friendly format and exits non-zero on failure
-
-## Supporting Files
-
-### `update.md`
-
-Operational incident note describing a March 2026 rate-limit and session-fallback failure mode in `government.py`, including the intended remediation order and test scenarios.
-
-### `logs/`
-
-Historical `congress.py` run artifacts from previous sessions. These are not required to execute the scripts, but they show the logging structure and example outputs produced by the debate workflow.
-
-## Troubleshooting
-
-- If a script prints `Codex CLI not found`, install Codex or pass `--codex-bin=...`
-- If `government.py` is resumed with expired session IDs, it should automatically start new sessions and continue
-- If a generated review file is missing its `VERDICT` line, `government.py` explicitly asks the Inspector to repair it
-- If no final output is produced by `congress.py`, inspect the corresponding `logs/<session_id>/` directory
-
-## Validation Performed In This Repository
-
-The repository currently validates cleanly with:
+Live engine constructors require a dedicated Git worktree on an
+`orchestrators/<run-name>` branch. The helper below prepares one from a clean
+synthetic source checkout; it does not launch an agent, commit, push, merge,
+or delete anything:
 
 ```powershell
-pytest -q test_government_fixes.py
-python test_government_fixes.py
-python congress.py --help
-python government.py --help
+.\.venv\Scripts\python.exe -m codex_orchestrators prepare-worktree --source <synthetic-repo> --destination <new-sibling-directory> --branch orchestrators/demo
 ```
+
+The helper refuses dirty sources, existing destinations, nested destinations,
+submodules, project Codex configuration, and root attributes/filter setup that
+needs separate review. See [usage and migration](docs/USAGE.md).
+
+## State, privacy, and limits
+
+Diagnostic metadata is stored under `%LOCALAPPDATA%/codex-orchestrators` on
+Windows or `$XDG_STATE_HOME/codex-orchestrators` on Linux (falling back to
+`~/.local/state`). Each diagnostic run is capped at 1,000 events.
+
+**Resume state and requested reports are different:** retained workflows still
+write sensitive state and working documents into their dedicated worktrees.
+They may contain requests, project content, paths, or session identifiers. They
+are not safe to publish merely because diagnostics are metadata-only.
+
+Preview diagnostic cleanup; add `--apply` only after reviewing the count:
+
+```powershell
+python -m codex_orchestrators purge --older-than-days 30
+```
+
+This does not erase resume state, deliverables, backups, or Codex's own sessions.
+Read [privacy and retention](docs/PRIVACY.md).
+
+Default ceilings are 24 agent calls and two hours per workflow instance, ten
+minutes per call, 1 MiB input, and 2 MiB combined subprocess output. A recovery
+operation allows its initial attempt plus three retries. These are **not dollar
+spend limits**, and an explicit new/resumed instance receives a new budget.
+
+## Development and evidence
+
+```powershell
+python -m pip install --require-hashes -r requirements-dev.txt
+python -m pytest -q
+python -m ruff check codex_orchestrators tests tools
+python tools/check_public_tree.py
+python -m build --no-isolation
+```
+
+Tests use synthetic files and fake process responses, without model credentials.
+Coverage includes command policy, JSONL failures, bounded recovery, environment
+filtering, metadata leakage, process cleanup, candidate drift, isolated worktree
+creation, and publication guards. Historical Government regression checks remain
+while deeper engine characterization continues. See [testing](docs/TESTING.md)
+for exact evidence and limitations; a green suite is not full-engine certification.
+
+## Project map
+
+- [Architecture and design decisions](docs/ARCHITECTURE.md)
+- [Usage, migration, and troubleshooting](docs/USAGE.md)
+- [Compatibility](docs/COMPATIBILITY.md)
+- [Threat model](docs/THREAT_MODEL.md) and [security reporting](SECURITY.md)
+- [Privacy and retention](docs/PRIVACY.md)
+- [Readiness checklist](docs/READINESS.md)
+- [Contribution workflow](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
+
+## License
+
+The [Codex Orchestrators Noncommercial Source License 1.0](LICENSE) permits
+noncommercial study and an explicit hiring-evaluation exception. It does **not**
+grant permission for paid services, client work, internal business automation,
+or commercial product development. This is **source-available software, not
+OSI-approved open source**. Third-party tools retain their own licenses.
+
+The custom terms have not been independently reviewed by a lawyer and cannot
+physically prevent misuse. Read [licensing details](docs/LICENSING.md) before
+sharing or relying on the commercial restriction.

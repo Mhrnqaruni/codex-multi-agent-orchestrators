@@ -1,0 +1,11 @@
+include README.md LICENSE SECURITY.md CONTRIBUTING.md CHANGELOG.md pyproject.toml
+recursive-include codex_orchestrators *.py
+recursive-include tests *.py
+recursive-include tools *.py
+recursive-include docs *.md
+include congress.py congress2.py government.py requirements-dev.in requirements-dev.txt
+global-exclude *.pyc *.pyo *.log *.bundle .env
+prune logs
+prune .git
+prune .venv
+prune .pytest_cache
