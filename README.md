@@ -7,8 +7,8 @@ output as success.
 **Alpha · source available for noncommercial use · Python 3.11+ · no third-party
 Python runtime dependencies**
 
-This is an independent project, not an official OpenAI product. The current
-candidate is undergoing private release review. **Do not make this repository's
+This is an independent project, not an official OpenAI product. This alpha is
+maintained privately while publication requirements are resolved. **Do not make this repository's
 existing history public.** See the [release gates](docs/READINESS.md).
 
 ## What the project does

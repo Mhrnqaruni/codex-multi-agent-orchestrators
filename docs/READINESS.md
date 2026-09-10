@@ -1,10 +1,10 @@
 # Public-readiness gate
 
-**Decision: keep private. This candidate is substantially hardened, but is not
+**Decision: keep private. This alpha is substantially hardened, but is not
 approved for public release or unrestricted live execution.** A professional
 README and passing unit tests do not replace the remaining safety gates.
 
-## Implemented in the candidate
+## Implemented
 
 - Private logs/incident memo removed from the tracked tree; original backup retained.
 - One canonical Congress engine with compatibility shims and installable packaging.
@@ -36,14 +36,17 @@ README and passing unit tests do not replace the remaining safety gates.
 
 ## Branch and publication boundaries
 
-The original `main` remains private and unchanged at the reviewed base. Work is
-committed on hardening/refactor branches, never directly on `main`. Local stacked
-topics are not automatically accepted integration changes. Review the cumulative
-PR and exact candidate results before merging to `integration/public-readiness`.
+On 2026-09-10, the owner authorized consolidating the completed improvements into
+private `main` and requested no further test runs. PR 2 integrated the previously
+checked implementation; the final documentation update is delivered through a
+separate PR to `main`. No code is committed directly to the default branch.
+The prior implementation passed 88 local tests and all eight GitHub CI jobs.
+This consolidation does not establish completion of the remaining gates above.
 
 Do not publish these branches: their ancestry contains the original private
-material. No force push, main merge, replacement repository, visibility change,
-package upload, release, or live private-target run is authorized by this file.
+material. The owner's main-merge approval does not authorize a force push,
+replacement public repository, visibility change, package upload, release, or
+live private-target run. Publishing a clean successor requires a separate decision.
 
 ## CV wording that is supportable now
 

@@ -1,9 +1,10 @@
 # Contributing during private hardening
 
-Keep `main` unchanged. Use an isolated topic worktree based on
-`integration/public-readiness`, and submit small PRs to that integration branch.
-Owner approval is required before merges; final integration and publication
-are separate decisions.
+Do not commit directly to `main`. Use an isolated topic worktree and submit a
+focused PR to the agreed base (`main` or `integration/public-readiness`). Owner
+approval is required before merges; integration and publication are separate
+decisions. The owner approved consolidating the current private alpha into main
+on 2026-09-10; this is not blanket approval for future merges or publication.
 
 Verify a confidential offline backup first. Record the base SHA and dirty state;
 never reset or absorb another person's changes. Never upload bundles, private
